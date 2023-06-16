@@ -6,7 +6,7 @@ The Pervasive Displays Library Suite is specifically designed for the [Pervasive
 
 ![](https://pdls.pervasivedisplays.com/userguide/img/Logo_PDI_text_320.png)
 
-The **PDLS_EXT3_Basic_BWRY** provides a high-level interface to drive the e-paper red and yellow colour screens with global update:
+The **PDLS_EXT3_Basic_BWRY** provides a high-level interface to drive the e-paper black-white-red-yellow colour screens with global update:
 
 + [EPD Extension Kit Gen 3 (EXT3 or EXT3-1)](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-3-EXT3/); 
 + iTC [black-white-red-yellow colour](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow) screens; and
@@ -16,7 +16,7 @@ Please refer to [PDLS_EXT3_Basic](https://github.com/rei-vilo/PDLS_EXT3_Basic/is
 
 ![](img/BWRY_Colours.png) ![](img/BWRY_Palette.png)
 
-By combining the four colours, black, white, red and yellow, six other colours are obtained: grey, light red, dark red, light yellow, dark yellow and orange.
+*By combining the four colours, black, white, red and yellow, six other colours are obtained: grey, light red, dark red, light yellow, dark yellow and orange.*
 
 ## Features
 
@@ -49,7 +49,7 @@ Software
 Hardware
 
 * Pervasive Displays [EPD Extension Kit Gen 3 (EXT3 or EXT3-1)](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-3-EXT3/)
-* Pervasive Displays iTC [red and yellow colour screens](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow)
+* Pervasive Displays iTC [black-white-red-yellow colour screens](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow)
 
 ## Licence
 
