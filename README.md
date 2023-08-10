@@ -14,9 +14,11 @@ The **PDLS_EXT3_Basic_BWRY** provides a high-level interface to drive the e-pape
 
 Please refer to [PDLS_EXT3_Basic](https://github.com/rei-vilo/PDLS_EXT3_Basic/issues) for reporting issues and contributing pull requests.
 
-![](img/BWRY_Colours.png) ![](img/BWRY_Palette.png)
+Basic colours | Ten colours | Contrasts 
+--- | --- | ---
+![](img/BWRY_Colours.png) | ![](img/BWRY_Palette.png) | ![](img/BWRY_Contrasts.png)
 
-*By combining the four colours, black, white, red and yellow, six other colours are obtained: grey, light red, dark red, light yellow, dark yellow and orange.*
+*By combining the four **basic colours**, black, white, red and yellow, six other colours are obtained: grey, light red, dark red, light yellow, dark yellow and orange, totalling **ten colours**, with high **contrasts** for high-impact messages.*
 
 ## Features
 
