@@ -6,8 +6,8 @@
 /// @n Based on highView technology
 ///
 /// @author Rei Vilo
-/// @date 21 Jun 2023
-/// @version 611
+/// @date 31 Aug 2023
+/// @version 614
 ///
 /// @copyright (c) Rei Vilo, 2010-2023
 /// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
@@ -24,8 +24,9 @@
 #endif // SDK
 
 // Set parameters
-#define DISPLAY_PALETTE_BWRY 1
 #define DISPLAY_COLOURS_BWRY 0
+#define DISPLAY_CONTRASTS_BWRY 1
+#define DISPLAY_PALETTE_BWRY 1
 
 // Include application, user and local libraries
 #include "SPI.h"
@@ -56,39 +57,154 @@ void wait(uint8_t second)
 }
 
 // Functions
-#if (DISPLAY_COLOURS_BWRY == 1)
+#if (DISPLAY_PALETTE_BWRY == 1)
 
-void displayColoursBWRY()
+void displayPaletteBWRY()
 {
-    myScreen.setOrientation(ORIENTATION_PORTRAIT);
-    myScreen.setPenSolid(false);
-    myScreen.selectFont(Font_Terminal8x12);
+    // Grid = 5
+    // .  .  .  Y  Y
+    // .  .  R  O  R
+    // .  W  lR lY W
+    // B  G  dR dY B
+    // B  W  R  Y
 
-    uint16_t x, y, dx, dy;
+    // Grid = 4
+    // .  .  .  Y
+    // .  .  R  O
+    // .  W  lR lY
+    // B  G  dR dY
 
     const uint8_t grid = 4; // 4 or 5
 
-    x = myScreen.screenSizeX();
-    y = myScreen.screenSizeY();
-    dx = x / 1;
-    dy = y / 4;
+    myScreen.setOrientation(ORIENTATION_PORTRAIT);
+    myScreen.setPenSolid(false);
+
+    uint16_t x0, y0, dx, dy, dz;
+
+    dz = min(myScreen.screenSizeX(), myScreen.screenSizeY()) / grid;
+    x0 = (myScreen.screenSizeX() - dz * grid) / 2;
+    y0 = (myScreen.screenSizeY() - dz * grid) / 2;
 
     myScreen.setPenSolid(true);
-    myScreen.dRectangle(dx * 0, dy * 0, dx, dy, myColours.black);
-    myScreen.dRectangle(dx * 0, dy * 1, dx, dy, myColours.white);
-    myScreen.dRectangle(dx * 0, dy * 2, dx, dy, myColours.red);
-    myScreen.dRectangle(dx * 0, dy * 3, dx, dy, myColours.yellow);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 0, y0 + dz * 4, dz, dz, myColours.black);
+        myScreen.dRectangle(x0 + dz * 1, y0 + dz * 4, dz, dz, myColours.white);
+        myScreen.dRectangle(x0 + dz * 2, y0 + dz * 4, dz, dz, myColours.red);
+        myScreen.dRectangle(x0 + dz * 3, y0 + dz * 4, dz, dz, myColours.yellow);
+    }
+    myScreen.dRectangle(x0 + dz * 0, y0 + dz * 3, dz, dz, myColours.black);
+    myScreen.dRectangle(x0 + dz * 1, y0 + dz * 3, dz, dz, myColours.grey);
+    myScreen.dRectangle(x0 + dz * 2, y0 + dz * 3, dz, dz, myColours.darkRed);
+    myScreen.dRectangle(x0 + dz * 3, y0 + dz * 3, dz, dz, myColours.darkYellow);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4, y0 + dz * 3, dz, dz, myColours.black);
+    }
+
+    myScreen.dRectangle(x0 + dz * 1, y0 + dz * 2, dz, dz, myColours.white);
+    myScreen.dRectangle(x0 + dz * 2, y0 + dz * 2, dz, dz, myColours.lightRed);
+    myScreen.dRectangle(x0 + dz * 3, y0 + dz * 2, dz, dz, myColours.lightYellow);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4, y0 + dz * 2, dz, dz, myColours.white);
+    }
+
+    myScreen.dRectangle(x0 + dz * 2, y0 + dz * 1, dz, dz, myColours.red);
+    myScreen.dRectangle(x0 + dz * 3, y0 + dz * 1, dz, dz, myColours.orange);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4, y0 + dz * 1, dz, dz, myColours.red);
+    }
+
+    myScreen.dRectangle(x0 + dz * 3, y0 + dz * 0, dz, dz, myColours.yellow);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4, y0 + dz * 0, dz, dz, myColours.yellow);
+    }
+
+    myScreen.setPenSolid(false);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 0 + 2, y0 + dz * 4 + 2, dz - 4, dz - 4, myColours.white);
+        myScreen.dRectangle(x0 + dz * 1 + 2, y0 + dz * 4 + 2, dz - 4, dz - 4, myColours.black);
+        myScreen.dRectangle(x0 + dz * 2 + 2, y0 + dz * 4 + 2, dz - 4, dz - 4, myColours.white);
+        myScreen.dRectangle(x0 + dz * 3 + 2, y0 + dz * 4 + 2, dz - 4, dz - 4, myColours.black);
+    }
+    myScreen.dRectangle(x0 + dz * 0 + 2, y0 + dz * 3 + 2, dz - 4, dz - 4, myColours.white);
+    myScreen.dRectangle(x0 + dz * 1 + 2, y0 + dz * 3 + 2, dz - 4, dz - 4, myColours.white);
+    myScreen.dRectangle(x0 + dz * 2 + 2, y0 + dz * 3 + 2, dz - 4, dz - 4, myColours.white);
+    myScreen.dRectangle(x0 + dz * 3 + 2, y0 + dz * 3 + 2, dz - 4, dz - 4, myColours.white);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4 + 2, y0 + dz * 3 + 2, dz - 4, dz - 4, myColours.white);
+    }
+
+    myScreen.dRectangle(x0 + dz * 1 + 2, y0 + dz * 2 + 2, dz - 4, dz - 4, myColours.black);
+    myScreen.dRectangle(x0 + dz * 2 + 2, y0 + dz * 2 + 2, dz - 4, dz - 4, myColours.black);
+    myScreen.dRectangle(x0 + dz * 3 + 2, y0 + dz * 2 + 2, dz - 4, dz - 4, myColours.black);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4 + 2, y0 + dz * 2 + 2, dz - 4, dz - 4, myColours.black);
+    }
+
+    myScreen.dRectangle(x0 + dz * 2 + 2, y0 + dz * 1 + 2, dz - 4, dz - 4, myColours.white);
+    myScreen.dRectangle(x0 + dz * 3 + 2, y0 + dz * 1 + 2, dz - 4, dz - 4, myColours.white);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4 + 2, y0 + dz * 1 + 2, dz - 4, dz - 4, myColours.white);
+    }
+
+    myScreen.dRectangle(x0 + dz * 3 + 2, y0 + dz * 0 + 2, dz - 4, dz - 4, myColours.black);
+    if (grid > 4)
+    {
+        myScreen.dRectangle(x0 + dz * 4 + 2, y0 + dz * 0 + 2, dz - 4, dz - 4, myColours.black);
+    }
 
     myScreen.setFontSolid(false);
-    myScreen.gText(dx * 0 + 4, dy * 0 + 4, "Black", myColours.white);
-    myScreen.gText(dx * 0 + 4, dy * 1 + 4, "White", myColours.black);
-    myScreen.gText(dx * 0 + 4, dy * 2 + 4, "Red", myColours.white);
-    myScreen.gText(dx * 0 + 4, dy * 3 + 4, "Yellow", myColours.black);
+    myScreen.selectFont(Font_Terminal8x12);
+
+    if (grid > 4)
+    {
+        myScreen.gText(x0 + dz * 0 + 4, y0 + dz * 4 + 4, "B", myColours.white);
+        myScreen.gText(x0 + dz * 1 + 4, y0 + dz * 4 + 4, "W", myColours.black);
+        myScreen.gText(x0 + dz * 2 + 4, y0 + dz * 4 + 4, "R", myColours.white);
+        myScreen.gText(x0 + dz * 3 + 4, y0 + dz * 4 + 4, "Y", myColours.black);
+    }
+    myScreen.gText(x0 + dz * 0 + 4, y0 + dz * 3 + 4, "B", myColours.white);
+    myScreen.gText(x0 + dz * 1 + 4, y0 + dz * 3 + 4, "G", myColours.white);
+    myScreen.gText(x0 + dz * 2 + 4, y0 + dz * 3 + 4, "dR", myColours.white);
+    myScreen.gText(x0 + dz * 3 + 4, y0 + dz * 3 + 4, "dY", myColours.white);
+    if (grid > 4)
+    {
+        myScreen.gText(x0 + dz * 4 + 4, y0 + dz * 3 + 4, "B", myColours.white);
+    }
+
+    myScreen.gText(x0 + dz * 1 + 4, y0 + dz * 2 + 4, "W", myColours.black);
+    myScreen.gText(x0 + dz * 2 + 4, y0 + dz * 2 + 4, "lR", myColours.black);
+    myScreen.gText(x0 + dz * 3 + 4, y0 + dz * 2 + 4, "lY", myColours.black);
+    if (grid > 4)
+    {
+        myScreen.gText(x0 + dz * 4 + 4, y0 + dz * 2 + 4, "W", myColours.black);
+    }
+
+    myScreen.gText(x0 + dz * 2 + 4, y0 + dz * 1 + 4, "R", myColours.white);
+    myScreen.gText(x0 + dz * 3 + 4, y0 + dz * 1 + 4, "O", myColours.white);
+    if (grid > 4)
+    {
+        myScreen.gText(x0 + dz * 4 + 4, y0 + dz * 1 + 4, "R", myColours.white);
+    }
+
+    myScreen.gText(x0 + dz * 3 + 4, y0 + dz * 0 + 4, "Y", myColours.black);
+    if (grid > 4)
+    {
+        myScreen.gText(x0 + dz * 4 + 4, y0 + dz * 0 + 4, "Y", myColours.black);
+    }
 
     myScreen.flush();
 }
 
-#endif // DISPLAY_COLOURS_BWRY
+#endif // DISPLAY_PALETTE_BWRY
 
 // Add setup code
 void setup()
@@ -106,13 +222,11 @@ void setup()
 
 #if (DISPLAY_PALETTE_BWRY == 1)
 
-    Serial.print("Colours BWRY... ");
+    Serial.print("DISPLAY_PALETTE_BWRY... ");
     myScreen.clear();
-    displayColoursBWRY();
-
-    wait(8);
-
+    displayPaletteBWRY();
     Serial.println("done");
+    wait(8);
 
 #endif // DISPLAY_PALETTE_BWRY
 
@@ -129,6 +243,9 @@ void setup()
 }
 
 // Add loop code
+///
+/// @brief Loop, empty
+///
 void loop()
 {
     delay(1000);

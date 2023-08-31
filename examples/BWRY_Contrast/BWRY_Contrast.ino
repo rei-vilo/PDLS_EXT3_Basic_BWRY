@@ -6,8 +6,8 @@
 /// @n Based on highView technology
 ///
 /// @author Rei Vilo
-/// @date 21 Jun 2023
-/// @version 611
+/// @date 31 Aug 2023
+/// @version 614
 ///
 /// @copyright (c) Rei Vilo, 2010-2023
 /// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
@@ -24,6 +24,9 @@
 #endif // SDK
 
 // Set parameters
+#define DISPLAY_COLOURS_BWRY 0
+#define DISPLAY_CONTRASTS_BWRY 1
+#define DISPLAY_PALETTE_BWRY 0
 
 // Include application, user and local libraries
 #include "SPI.h"
@@ -54,6 +57,7 @@ void wait(uint8_t second)
 }
 
 // Functions
+#if (DISPLAY_CONTRASTS_BWRY == 1)
 ///
 /// @brief Palette test screen
 ///
@@ -89,6 +93,7 @@ void displayContrastBWRY()
 
     myScreen.flush();
 }
+#endif // DISPLAY_CONTRASTS_BWRY
 
 // Add setup code
 ///
@@ -107,10 +112,14 @@ void setup()
     myScreen.begin();
     Serial.println(formatString("%s %ix%i", myScreen.WhoAmI().c_str(), myScreen.screenSizeX(), myScreen.screenSizeY()));
 
-    Serial.print("Contrasts BWRY... ");
+#if (DISPLAY_CONTRASTS_BWRY == 1)
+
+    Serial.print("DISPLAY_CONTRASTS_BWRY... ");
     myScreen.clear();
     displayContrastBWRY();
     wait(8);
+
+#endif // DISPLAY_CONTRASTS_BWRY
 
     Serial.print("White... ");
     myScreen.clear();
