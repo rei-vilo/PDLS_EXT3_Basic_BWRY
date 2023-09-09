@@ -35,9 +35,9 @@
 // Define structures and classes
 
 // Define variables and constants
-// Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_154_E5, boardRaspberryPiPico_RP2040);
-// Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_213_E5, boardRaspberryPiPico_RP2040);
-Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_266_E5, boardRaspberryPiPico_RP2040);
+// Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_154_BWRY, boardRaspberryPiPico_RP2040);
+// Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_213_BWRY, boardRaspberryPiPico_RP2040);
+Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_266_BWRY, boardRaspberryPiPico_RP2040);
 
 // Prototypes
 
