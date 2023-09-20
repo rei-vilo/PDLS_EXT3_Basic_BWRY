@@ -1,5 +1,5 @@
 ///
-/// @file BWRY_Contrast.ino
+/// @file BWRY_Contrasts.ino
 /// @brief Example of features for basic edition
 ///
 /// @details Project Pervasive Displays Library Suite
@@ -58,10 +58,11 @@ void wait(uint8_t second)
 
 // Functions
 #if (DISPLAY_CONTRASTS_BWRY == 1)
+
 ///
 /// @brief Palette test screen
 ///
-void displayContrastBWRY()
+void displayContrastsBWRY()
 {
     const uint8_t grid = 4; // 4 or 5
     const uint16_t colours[4] = {myColours.black, myColours.white, myColours.red, myColours.yellow};
@@ -93,6 +94,7 @@ void displayContrastBWRY()
 
     myScreen.flush();
 }
+
 #endif // DISPLAY_CONTRASTS_BWRY
 
 // Add setup code
@@ -116,7 +118,7 @@ void setup()
 
     Serial.print("DISPLAY_CONTRASTS_BWRY... ");
     myScreen.clear();
-    displayContrastBWRY();
+    displayContrastsBWRY();
     wait(8);
 
 #endif // DISPLAY_CONTRASTS_BWRY

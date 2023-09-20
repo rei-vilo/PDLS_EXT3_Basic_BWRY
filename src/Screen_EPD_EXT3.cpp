@@ -23,11 +23,9 @@
 // Release 609: Added temperature management
 // Release 610: Removed partial update
 // Release 611: Added support for red and yellow colour screens
-// Release 614: Added support for Arduino Nano ESP32 board 
 //
 
 // Library header
-#include "SPI.h"
 #include "Screen_EPD_EXT3.h"
 
 #if defined(ENERGIA)
@@ -86,32 +84,32 @@ const uint8_t COG_initialData266QS[48] =
 void Screen_EPD_EXT3::COG_initial()
 {
     // Work settings
-    // _sendIndexData(0x01, &COG_initialData[16], 1); // PWR
-    _sendCommandData8(0x01, COG_initialData[16]); // PWR
-    _sendIndexData(0x00, &COG_initialData[17], 2); // PSR
-    _sendIndexData(0x03, &COG_initialData[30], 3); // PFS
-    _sendIndexData(0x06, &COG_initialData[23], 7); // BTST_P
-    // _sendIndexData(0x50, &COG_initialData[39], 1); // CDI
-    _sendCommandData8(0x50, COG_initialData[39]); // CDI
-    _sendIndexData(0x60, &COG_initialData[40], 2); // TCON
-    _sendIndexData(0x61, &COG_initialData[19], 4); // TRES
-    // _sendIndexData(0xE7, &COG_initialData[33], 1); //
-    _sendCommandData8(0xE7, COG_initialData[33]); //
-    // _sendIndexData(0xE3, &COG_initialData[42], 1); // PWS
-    _sendCommandData8(0xE3, COG_initialData[42]); // PWS
-    // _sendIndexData(0x4D, &COG_initialData[43], 1); //
-    _sendCommandData8(0x4D, COG_initialData[43]); //
-    // _sendIndexData(0xB4, &COG_initialData[44], 1); //
-    _sendCommandData8(0xB4, COG_initialData[44]); //
-    // _sendIndexData(0xB5, &COG_initialData[45], 1); //
-    _sendCommandData8(0xB5, COG_initialData[45]); //
+    //b_sendIndexData(0x01, &COG_initialData[16], 1); // PWR
+    b_sendCommandData8(0x01, COG_initialData[16]); // PWR
+    b_sendIndexData(0x00, &COG_initialData[17], 2); // PSR
+    b_sendIndexData(0x03, &COG_initialData[30], 3); // PFS
+    b_sendIndexData(0x06, &COG_initialData[23], 7); // BTST_P
+    //b_sendIndexData(0x50, &COG_initialData[39], 1); // CDI
+    b_sendCommandData8(0x50, COG_initialData[39]); // CDI
+    b_sendIndexData(0x60, &COG_initialData[40], 2); // TCON
+    b_sendIndexData(0x61, &COG_initialData[19], 4); // TRES
+    //b_sendIndexData(0xE7, &COG_initialData[33], 1); //
+    b_sendCommandData8(0xE7, COG_initialData[33]); //
+    //b_sendIndexData(0xE3, &COG_initialData[42], 1); // PWS
+    b_sendCommandData8(0xE3, COG_initialData[42]); // PWS
+    //b_sendIndexData(0x4D, &COG_initialData[43], 1); //
+    b_sendCommandData8(0x4D, COG_initialData[43]); //
+    //b_sendIndexData(0xB4, &COG_initialData[44], 1); //
+    b_sendCommandData8(0xB4, COG_initialData[44]); //
+    //b_sendIndexData(0xB5, &COG_initialData[45], 1); //
+    b_sendCommandData8(0xB5, COG_initialData[45]); //
 
     // uint8_t index_E9[] = {0x01};
-    // _sendIndexData(0xE9, index_E9, 1); //
-    _sendCommandData8(0xE9, 0x01); //
+    //b_sendIndexData(0xE9, index_E9, 1); //
+    b_sendCommandData8(0xE9, 0x01); //
     // uint8_t index_30[] = {0x08};
-    // _sendIndexData(0x30, index_30, 1); // PLL
-    _sendCommandData8(0x30, 0x08); // PLL
+    //b_sendIndexData(0x30, index_30, 1); // PLL
+    b_sendCommandData8(0x30, 0x08); // PLL
 }
 
 void Screen_EPD_EXT3::COG_getUserData()
@@ -144,29 +142,29 @@ void Screen_EPD_EXT3::COG_getUserData()
 
 void Screen_EPD_EXT3::COG_sendImageDataGlobal()
 {
-    _sendIndexData(0x10, _newImage, _frameSize); // First frame, blackBuffer
+    b_sendIndexData(0x10, _newImage, _frameSize); // First frame, blackBuffer
 }
 
 void Screen_EPD_EXT3::COG_update()
 {
-    _sendCommand8(0x04); // Power on
+    b_sendCommand8(0x04); // Power on
     digitalWrite(_pin.panelCS, HIGH); // CS# = 1
-    _waitBusy();
+    b_waitBusy();
 
     // uint8_t data12[] = {0x00};
-    // _sendIndexData(0x12, data12, 1); // Display Refresh
-    _sendCommandData8(0x12, 0x00); // Display Refresh
+    //b_sendIndexData(0x12, data12, 1); // Display Refresh
+    b_sendCommandData8(0x12, 0x00); // Display Refresh
     digitalWrite(_pin.panelCS, HIGH); // CS# = 1
-    _waitBusy();
+    b_waitBusy();
 }
 
 void Screen_EPD_EXT3::COG_powerOff()
 {
     uint8_t data02[] = {0x00};
-    // _sendIndexData(0x02, data02, 1); // Turn off DC/DC
-    _sendCommandData8(0x02, 0x00); // Turn off DC/DC
+    //b_sendIndexData(0x02, data02, 1); // Turn off DC/DC
+    b_sendCommandData8(0x02, 0x00); // Turn off DC/DC
     digitalWrite(_pin.panelCS, HIGH); // CS# = 1
-    _waitBusy();
+    b_waitBusy();
 }
 /// @endcond
 //
@@ -334,75 +332,59 @@ void Screen_EPD_EXT3::begin()
 #endif // ENERGIA
 
     // Reset
-    _reset(10, 10, 20, 40, 10); // specific
-    _waitBusy(); // specific
+    b_reset(10, 10, 20, 40, 10); // specific
+    b_waitBusy(); // specific
 
     // Check type and get tables
     COG_getUserData(); // nothing sent to panel
-
-    _screenWidth = _screenSizeH;
-    _screenHeigth = _screenSizeV;
 
     // Standard
     hV_Screen_Buffer::begin();
 
     setOrientation(0);
-    if (_f_fontMax() > 0)
+    if (f_fontMax() > 0)
     {
-        _f_selectFont(0);
+        f_selectFont(0);
     }
-    _f_fontSolid = false;
+    f_fontSolid = false;
 
     _penSolid = false;
     _invert = false;
 
     // Report
-    Serial.println(formatString("= Screen %s %ix%i", WhoAmI(), screenSizeX(), screenSizeY()));
-    Serial.println(formatString("= PDLS v%i", SCREEN_EPD_EXT3_RELEASE));
+    Serial.println(formatString("= Screen %s %ix%i", WhoAmI().c_str(), screenSizeX(), screenSizeY()));
+    Serial.println(formatString("= PDLS %s v%i.%i.%i", SCREEN_EPD_EXT3_VARIANT, SCREEN_EPD_EXT3_RELEASE / 100, (SCREEN_EPD_EXT3_RELEASE / 10) % 10, SCREEN_EPD_EXT3_RELEASE % 10));
 
     clear();
 }
 
-void Screen_EPD_EXT3::_reset(uint32_t ms1, uint32_t ms2, uint32_t ms3, uint32_t ms4, uint32_t ms5)
-{
-    delay_ms(ms1); // delay_ms 5ms
-    digitalWrite(_pin.panelReset, HIGH); // RES# = 1
-    delay_ms(ms2); // delay_ms 5ms
-    digitalWrite(_pin.panelReset, LOW);
-    delay_ms(ms3);
-    digitalWrite(_pin.panelReset, HIGH);
-    delay_ms(ms4);
-    digitalWrite(_pin.panelCS, HIGH); // CS# = 1
-    delay_ms(ms5);
-}
-
 String Screen_EPD_EXT3::WhoAmI()
 {
-    String text = "iTC ";
-    text += String(_screenDiagonal / 100);
-    text += ".";
-    text += String(_screenDiagonal % 100);
-    text += "\" -";
+    char work[64] = {0};
+    u_WhoAmI(work);
 
-#if (FONT_MODE == USE_FONT_HEADER)
+    return formatString("iTC %i.%02i\"%s", _screenDiagonal / 100, _screenDiagonal % 100, work);
+}
 
-    text += "H";
+uint8_t Screen_EPD_EXT3::flushMode(uint8_t updateMode)
+{
+    updateMode = checkTemperatureMode(updateMode);
 
-#elif (FONT_MODE == USE_FONT_FLASH)
+    switch (updateMode)
+    {
+        case UPDATE_FAST:
+        case UPDATE_GLOBAL:
 
-    text += "F";
+            _flushGlobal();
+            break;
 
-#elif (FONT_MODE == USE_FONT_TERMINAL)
+        default:
 
-    text += "T";
+            Serial.println("* PDLS - UPDATE_NONE invoked");
+            break;
+    }
 
-#else
-
-    text += "?";
-
-#endif // FONT_MODE
-
-    return text;
+    return updateMode;
 }
 
 void Screen_EPD_EXT3::flush()
@@ -519,21 +501,6 @@ void Screen_EPD_EXT3::clear(uint16_t colour)
     }
 }
 
-void Screen_EPD_EXT3::invert(bool flag)
-{
-    _invert = flag;
-}
-
-void Screen_EPD_EXT3::point(uint16_t x1, uint16_t y1, uint16_t colour)
-{
-    _setPoint(x1, y1, colour);
-}
-
-uint16_t Screen_EPD_EXT3::readPixel(uint16_t x1, uint16_t y1)
-{
-    return _getPoint(x1, y1);
-}
-
 void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
 {
     // Orient and check coordinates are within screen
@@ -542,9 +509,6 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
     {
         return;
     }
-
-    uint32_t z1 = _getZ(x1, y1);
-    uint8_t b1 = 6 - 2 * (y1 % 4);
 
     // Convert combined colours into basic colours
     bool flagOdd = ((x1 + y1) % 2 == 0);
@@ -616,6 +580,10 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
         }
     }
 
+    // Coordinates
+    uint32_t z1 = _getZ(x1, y1);
+    uint16_t b1 = _getB(x1, y1);
+
     // Basic colours
     if ((colour == myColours.black) xor _invert)
     {
@@ -650,7 +618,7 @@ void Screen_EPD_EXT3::_setOrientation(uint8_t orientation)
 
 bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
 {
-    bool flagError = true; // false = success, true = error
+    bool _flagError = true; // false = success, true = error
     switch (_orientation)
     {
         case 3: // checked, previously 1
@@ -658,7 +626,7 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
             if ((x < _screenSizeV) and (y < _screenSizeH))
             {
                 x = _screenSizeV - 1 - x;
-                flagError = false;
+                _flagError = false;
             }
             break;
 
@@ -669,7 +637,7 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
                 x = _screenSizeH - 1 - x;
                 y = _screenSizeV - 1 - y;
                 swap(x, y);
-                flagError = false;
+                _flagError = false;
             }
             break;
 
@@ -678,7 +646,7 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
             if ((x < _screenSizeV) and (y < _screenSizeH))
             {
                 y = _screenSizeH - 1 - y;
-                flagError = false;
+                _flagError = false;
             }
             break;
 
@@ -687,12 +655,17 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
             if ((x < _screenSizeH) and (y < _screenSizeV))
             {
                 swap(x, y);
-                flagError = false;
+                _flagError = false;
             }
             break;
     }
 
-    return flagError;
+    return _flagError;
+}
+
+uint16_t Screen_EPD_EXT3::_getPoint(uint16_t x1, uint16_t y1)
+{
+    return 0x0000;
 }
 
 uint32_t Screen_EPD_EXT3::_getZ(uint16_t x1, uint16_t y1)
@@ -706,186 +679,23 @@ uint32_t Screen_EPD_EXT3::_getZ(uint16_t x1, uint16_t y1)
     return z1;
 }
 
-uint16_t Screen_EPD_EXT3::_getPoint(uint16_t x1, uint16_t y1)
+uint16_t Screen_EPD_EXT3::_getB(uint16_t x1, uint16_t y1)
 {
-    return 0x0000;
+    uint16_t b1 = 0;
+
+    b1 = 6 - 2 * (y1 % 4);
+
+    return b1;
 }
 
-// Utilities
-void Screen_EPD_EXT3::_sendCommand8(uint8_t command)
+void Screen_EPD_EXT3::regenerate()
 {
-    digitalWrite(_pin.panelDC, LOW);
-    digitalWrite(_pin.panelCS, LOW);
+    clear(myColours.black);
+    flush();
 
-    SPI.transfer(command);
+    delay(100);
 
-    digitalWrite(_pin.panelCS, HIGH);
+    clear(myColours.white);
+    flush();
 }
-
-void Screen_EPD_EXT3::_sendCommandData8(uint8_t command, uint8_t data)
-{
-    digitalWrite(_pin.panelDC, LOW); // LOW = command
-    digitalWrite(_pin.panelCS, LOW);
-
-    SPI.transfer(command);
-
-    digitalWrite(_pin.panelDC, HIGH); // HIGH = data
-    SPI.transfer(data);
-
-    digitalWrite(_pin.panelCS, HIGH);
-}
-
-void Screen_EPD_EXT3::_waitBusy()
-{
-    // LOW = busy, HIGH = ready
-    while (digitalRead(_pin.panelBusy) != HIGH)
-    {
-        delay(100);
-    }
-}
-
-void Screen_EPD_EXT3::_sendIndexData(uint8_t index, const uint8_t * data, uint32_t size)
-{
-    digitalWrite(_pin.panelDC, LOW); // DC Low = Command
-    digitalWrite(_pin.panelCS, LOW); // CS Low = Select
-
-    delayMicroseconds(50);
-    SPI.transfer(index);
-    delayMicroseconds(50);
-
-    digitalWrite(_pin.panelCS, HIGH); // CS High = Unselect
-    digitalWrite(_pin.panelDC, HIGH); // DC High = Data
-    digitalWrite(_pin.panelCS, LOW); // CS Low = Select
-
-    delayMicroseconds(50);
-    for (uint32_t i = 0; i < size; i++)
-    {
-        SPI.transfer(data[i]);
-    }
-    delayMicroseconds(50);
-
-    digitalWrite(_pin.panelCS, HIGH); // CS High
-}
-
-//
-// === Miscellaneous section
-//
-//
-// === End of Miscellaneous section
-//
-
-//
-// === Temperature section
-//
-void Screen_EPD_EXT3::setTemperatureC(int8_t temperatureC)
-{
-    _temperature = temperatureC;
-
-    uint8_t _temperature2;
-    if (_temperature < 0)
-    {
-        _temperature2 = -_temperature;
-        _temperature2 = (uint8_t)(~_temperature2) + 1; // 2's complement
-    }
-    else
-    {
-        _temperature2 = _temperature;
-    }
-    // indexE5_data[0] = _temperature2;
-}
-
-void Screen_EPD_EXT3::setTemperatureF(int16_t temperatureF)
-{
-    int8_t temperatureC = ((temperatureF - 32) * 5) / 9; // C = (F - 32) * 5 / 9
-    setTemperatureC(temperatureC);
-}
-
-uint8_t Screen_EPD_EXT3::checkTemperatureMode(uint8_t updateMode)
-{
-    // #define FEATURE_FAST 0x01 ///< With embedded fast update
-    // #define FEATURE_TOUCH 0x02 ///< With capacitive touch panel
-    // #define FEATURE_OTHER 0x04 ///< With other feature
-    // #define FEATURE_WIDE_TEMPERATURE 0x08 ///< With wide operating temperature
-    // #define FEATURE_RED 0x10 ///< With red colour
-    // #define FEATURE_RED_YELLOW 0x20 ///< With red and yellow colours
-
-    updateMode = UPDATE_GLOBAL;
-
-    switch (_codeExtra & 0x19)
-    {
-        case FEATURE_FAST: // PS series
-
-            // Fast 	PS 	Embedded fast update 	FU: +15 to +30 °C 	GU: 0 to +50 °C
-            if ((_temperature < 0) or (_temperature > 50))
-            {
-                updateMode = UPDATE_NONE;
-            }
-            break;
-
-        case (FEATURE_FAST | FEATURE_WIDE_TEMPERATURE): // KS series
-
-            // Wide 	KS 	Wide temperature and embedded fast update 	FU: 0 to +50 °C 	GU: -15 to +60 °C
-            if ((_temperature < -15) or (_temperature > 60))
-            {
-                updateMode = UPDATE_NONE;
-            }
-            break;
-
-        case FEATURE_WIDE_TEMPERATURE: // HS series
-
-            // Freezer 	HS 	Global update below 0 °C 	FU: - 	GU: -25 to +30 °C
-            if ((_temperature < -25) or (_temperature > 30))
-            {
-                updateMode = UPDATE_NONE;
-            }
-            break;
-
-        case FEATURE_RED: // JS series
-        case FEATURE_RED_YELLOW: // QS series
-
-            // Red  JS 	Red colour 	FU: - 	GU: 0 to +40 °C
-            // Red  QS 	Red and yellow colours 	FU: - 	GU: 0 to +40 °C
-            if ((_temperature < 0) or (_temperature > 40))
-            {
-                updateMode = UPDATE_NONE;
-            }
-            break;
-
-        default: // CS series
-
-            // Normal 	CS 	Global update above 0 °C 	FU: - 	GU: 0 to +50 °C
-            updateMode = UPDATE_GLOBAL;
-            if ((_temperature < 0) or (_temperature > 50))
-            {
-                updateMode = UPDATE_NONE;
-            }
-            break;
-    }
-
-    return updateMode;
-}
-
-uint8_t Screen_EPD_EXT3::flushMode(uint8_t updateMode)
-{
-    updateMode = checkTemperatureMode(updateMode);
-
-    switch (updateMode)
-    {
-        case UPDATE_FAST:
-        case UPDATE_GLOBAL:
-
-            _flushGlobal();
-            break;
-
-        default:
-
-            Serial.println("* PDLS - UPDATE_NONE invoked");
-            break;
-    }
-
-    return updateMode;
-}
-//
-// === End of Temperature section
-//
 
