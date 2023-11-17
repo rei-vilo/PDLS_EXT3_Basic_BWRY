@@ -6,6 +6,9 @@
 /// @details Project Pervasive Displays Library Suite
 /// @n Based on highView technology
 ///
+/// @n Content
+/// * 1- List of supported Pervasive Displays screens
+///
 /// @author Rei Vilo
 /// @date 21 Sep 2023
 /// @version 700
@@ -60,7 +63,7 @@
 /// @}
 
 ///
-/// @name Colour black-white-red screens
+/// @name Colour black-white-red Spectra screens
 /// @note Global update mode
 /// @see https://www.pervasivedisplays.com/products/?_sft_etc_itc=itc&_sft_product_colour=black-white-red
 /// @{
@@ -82,7 +85,7 @@
 /// @}
 
 ///
-/// @name Colour black-white-red-yellow screens
+/// @name Colour black-white-red-yellow Spectra 4 screens
 /// @note Global update mode
 /// @see https://www.pervasivedisplays.com/products/?_sft_etc_itc=itc&_sft_product_colour=black-white-red-yellow
 /// @{
@@ -95,7 +98,7 @@
 ///
 /// @name Monochrome touch screens with embedded fast update
 /// @note Global and fast update modes
-/// @deprecated Partial update is removed. Use fast update instead (7.0.0). 
+/// @deprecated Partial update is removed. Use fast update instead (7.0.0).
 /// @see https://www.pervasivedisplays.com/products
 /// @{
 ///
@@ -157,10 +160,10 @@
 
 ///
 /// @name Frame-buffer sizes
-/// @details 
+/// @details
 /// * Black-white-red screens and monochrome screens
 /// @n Frame-buffer size = width * height / 8 * depth, uint32_t
-/// @n Depth = 2 
+/// @n Depth = 2
 /// * Black-white-red_yellow screens
 /// @n Frame-buffer size = width * height / 4 * depth, uint32_t
 /// @n Depth = 1

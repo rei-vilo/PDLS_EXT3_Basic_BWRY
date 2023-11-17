@@ -16,21 +16,23 @@
 /// @n
 ///
 
+// Screen
+#include "PDLS_EXT3_Basic_BWRY.h"
+
 // SDK
-#if defined(ENERGIA) // LaunchPad specific
-#include "Energia.h"
-#else // Arduino general
-#include "Arduino.h"
-#endif // SDK
+// #include <Arduino.h>
+#include "hV_HAL_Peripherals.h"
+
+// Confifuration
+#include "hV_Configuration.h"
+
+// Include application, user and local libraries
+// #include <SPI.h>
 
 // Set parameters
 #define DISPLAY_COLOURS_BWRY 0
 #define DISPLAY_CONTRASTS_BWRY 1
 #define DISPLAY_PALETTE_BWRY 0
-
-// Include application, user and local libraries
-#include "SPI.h"
-#include "PDLS_EXT3_Basic_BWRY.h"
 
 // Define structures and classes
 
@@ -129,10 +131,6 @@ void setup()
 
     Serial.println("=== ");
     Serial.println();
-
-#if defined(ARDUINO_ARCH_PIDUINO)
-    exit(0);
-#endif
 }
 
 // Add loop code

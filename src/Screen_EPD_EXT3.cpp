@@ -9,7 +9,7 @@
 // Created by Rei Vilo, 28 Jun 2016
 //
 // Copyright (c) Rei Vilo, 2010-2023
-// Licence All rights reserved
+// Licence Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 //
 // Release 508: Added support for E2969CS0B and E2B98CS0B
 // Release 511: Improved stability for external SPI SRAM
@@ -23,6 +23,8 @@
 // Release 609: Added temperature management
 // Release 610: Removed partial update
 // Release 611: Added support for red and yellow colour screens
+// Release 700: Refactored screen and board functions
+// Release 701: Improved functions names consistency
 //
 
 // Library header
@@ -114,10 +116,10 @@ void Screen_EPD_EXT3::COG_initial()
 
 void Screen_EPD_EXT3::COG_getUserData()
 {
-    uint16_t _codeSizeType = _eScreen_EPD_EXT3 & 0xffff;
+    uint16_t u_codeSizeType = u_eScreen_EPD_EXT3 & 0xffff;
 
     // Size cSize cType Driver
-    switch (_codeSizeType)
+    switch (u_codeSizeType)
     {
         case 0x150f: // 1.54”
 
@@ -142,19 +144,19 @@ void Screen_EPD_EXT3::COG_getUserData()
 
 void Screen_EPD_EXT3::COG_sendImageDataGlobal()
 {
-    b_sendIndexData(0x10, _newImage, _frameSize); // First frame, blackBuffer
+    b_sendIndexData(0x10, u_newImage, u_frameSize); // First frame, blackBuffer
 }
 
 void Screen_EPD_EXT3::COG_update()
 {
     b_sendCommand8(0x04); // Power on
-    digitalWrite(_pin.panelCS, HIGH); // CS# = 1
+    digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
     b_waitBusy();
 
     // uint8_t data12[] = {0x00};
     //b_sendIndexData(0x12, data12, 1); // Display Refresh
     b_sendCommandData8(0x12, 0x00); // Display Refresh
-    digitalWrite(_pin.panelCS, HIGH); // CS# = 1
+    digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
     b_waitBusy();
 }
 
@@ -163,7 +165,7 @@ void Screen_EPD_EXT3::COG_powerOff()
     uint8_t data02[] = {0x00};
     //b_sendIndexData(0x02, data02, 1); // Turn off DC/DC
     b_sendCommandData8(0x02, 0x00); // Turn off DC/DC
-    digitalWrite(_pin.panelCS, HIGH); // CS# = 1
+    digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
     b_waitBusy();
 }
 /// @endcond
@@ -171,32 +173,32 @@ void Screen_EPD_EXT3::COG_powerOff()
 // === End of COG section
 //
 
-// Utilities
-
-// Class
+//
+// === Class section
+//
 Screen_EPD_EXT3::Screen_EPD_EXT3(eScreen_EPD_EXT3_t eScreen_EPD_EXT3, pins_t board)
 {
-    _eScreen_EPD_EXT3 = eScreen_EPD_EXT3;
-    _pin = board;
-    _newImage = 0; // nullptr
+    u_eScreen_EPD_EXT3 = eScreen_EPD_EXT3;
+    b_pin = board;
+    u_newImage = 0; // nullptr
 }
 
 void Screen_EPD_EXT3::begin()
 {
-    _codeExtra = (_eScreen_EPD_EXT3 >> 16) & 0xff;
-    _codeSize = (_eScreen_EPD_EXT3 >> 8) & 0xff;
-    _codeType = _eScreen_EPD_EXT3 & 0xff;
-    _screenColourBits = 2; // BWRY
+    u_codeExtra = (u_eScreen_EPD_EXT3 >> 16) & 0xff;
+    u_codeSize = (u_eScreen_EPD_EXT3 >> 8) & 0xff;
+    u_codeType = u_eScreen_EPD_EXT3 & 0xff;
+    _screenColourBits = 2; // BWR and BWRY
 
     // Check
-    if (not(_codeExtra & FEATURE_RED_YELLOW))
+    if (not(u_codeExtra & FEATURE_RED_YELLOW))
     {
         Serial.println();
         Serial.println("ERROR - Not a red and yellow screen");
         while (true);
     }
 
-    switch (_codeSize)
+    switch (u_codeSize)
     {
         case 0x15: // 1.54"
 
@@ -222,76 +224,76 @@ void Screen_EPD_EXT3::begin()
         default:
 
             break;
-    } // _codeSize
+    } // u_codeSize
 
-    _bufferDepth = 1; // 1 buffer with 2 bits per pixel
-    _bufferSizeV = _screenSizeV; // vertical = wide size
-    _bufferSizeH = _screenSizeH / 4; // horizontal = small size 112 / 4; 2 bits per pixel
+    u_bufferDepth = 1; // 1 buffer with 2 bits per pixel
+    u_bufferSizeV = _screenSizeV; // vertical = wide size
+    u_bufferSizeH = _screenSizeH / 4; // horizontal = small size 112 / 4; 2 bits per pixel
 
     // Force conversion for two unit16_t multiplication into uint32_t.
     // Actually for 1 colour; BWR requires 2 pages.
-    _pageColourSize = (uint32_t)_bufferSizeV * (uint32_t)_bufferSizeH;
+    u_pageColourSize = (uint32_t)u_bufferSizeV * (uint32_t)u_bufferSizeH;
 
-    // _frameSize = _pageColourSize, except for 9.69 and 11.98
-    _frameSize = _pageColourSize;
+    // u_frameSize = u_pageColourSize, except for 9.69 and 11.98
+    u_frameSize = u_pageColourSize;
 
 #if defined(BOARD_HAS_PSRAM) // ESP32 PSRAM specific case
 
-    if (_newImage == 0)
+    if (u_newImage == 0)
     {
         static uint8_t * _newFrameBuffer;
-        _newFrameBuffer = (uint8_t *) ps_malloc(_pageColourSize * _bufferDepth);
-        _newImage = (uint8_t *) _newFrameBuffer;
+        _newFrameBuffer = (uint8_t *) ps_malloc(u_pageColourSize * u_bufferDepth);
+        u_newImage = (uint8_t *) _newFrameBuffer;
     }
 
 #else // default case
 
-    if (_newImage == 0)
+    if (u_newImage == 0)
     {
         static uint8_t * _newFrameBuffer;
-        _newFrameBuffer = new uint8_t[_pageColourSize * _bufferDepth];
-        _newImage = (uint8_t *) _newFrameBuffer;
+        _newFrameBuffer = new uint8_t[u_pageColourSize * u_bufferDepth];
+        u_newImage = (uint8_t *) _newFrameBuffer;
     }
 
 #endif // ESP32 BOARD_HAS_PSRAM
 
-    memset(_newImage, 0x00, _pageColourSize * _bufferDepth);
+    memset(u_newImage, 0x00, u_pageColourSize * u_bufferDepth);
 
     // Initialise the /CS pins
-    pinMode(_pin.panelCS, OUTPUT);
-    digitalWrite(_pin.panelCS, HIGH); // CS# = 1
+    pinMode(b_pin.panelCS, OUTPUT);
+    digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
 
     // New generic solution
-    pinMode(_pin.panelDC, OUTPUT);
-    pinMode(_pin.panelReset, OUTPUT);
-    pinMode(_pin.panelBusy, INPUT); // All Pins 0
+    pinMode(b_pin.panelDC, OUTPUT);
+    pinMode(b_pin.panelReset, OUTPUT);
+    pinMode(b_pin.panelBusy, INPUT); // All Pins 0
 
     // Initialise Flash /CS as HIGH
-    if (_pin.flashCS != NOT_CONNECTED)
+    if (b_pin.flashCS != NOT_CONNECTED)
     {
-        pinMode(_pin.flashCS, OUTPUT);
-        digitalWrite(_pin.flashCS, HIGH);
+        pinMode(b_pin.flashCS, OUTPUT);
+        digitalWrite(b_pin.flashCS, HIGH);
     }
 
     // Initialise slave panel /CS as HIGH
-    if (_pin.panelCSS != NOT_CONNECTED)
+    if (b_pin.panelCSS != NOT_CONNECTED)
     {
-        pinMode(_pin.panelCSS, OUTPUT);
-        digitalWrite(_pin.panelCSS, HIGH);
+        pinMode(b_pin.panelCSS, OUTPUT);
+        digitalWrite(b_pin.panelCSS, HIGH);
     }
 
     // Initialise slave Flash /CS as HIGH
-    if (_pin.flashCSS != NOT_CONNECTED)
+    if (b_pin.flashCSS != NOT_CONNECTED)
     {
-        pinMode(_pin.flashCSS, OUTPUT);
-        digitalWrite(_pin.flashCSS, HIGH);
+        pinMode(b_pin.flashCSS, OUTPUT);
+        digitalWrite(b_pin.flashCSS, HIGH);
     }
 
     // Initialise SD-card /CS as HIGH
-    if (_pin.cardCS != NOT_CONNECTED)
+    if (b_pin.cardCS != NOT_CONNECTED)
     {
-        pinMode(_pin.cardCS, OUTPUT);
-        digitalWrite(_pin.cardCS, HIGH);
+        pinMode(b_pin.cardCS, OUTPUT);
+        digitalWrite(b_pin.cardCS, HIGH);
     }
 
     // Initialise SPI
@@ -349,7 +351,7 @@ void Screen_EPD_EXT3::begin()
     f_fontSolid = false;
 
     _penSolid = false;
-    _invert = false;
+    u_invert = false;
 
     // Report
     Serial.println(formatString("= Screen %s %ix%i", WhoAmI().c_str(), screenSizeX(), screenSizeY()));
@@ -410,92 +412,92 @@ void Screen_EPD_EXT3::clear(uint16_t colour)
     if (colour == myColours.grey)
     {
         // black = 0-1, white = 0-0
-        for (uint16_t i = 0; i < _bufferSizeV; i++)
+        for (uint16_t i = 0; i < u_bufferSizeV; i++)
         {
             uint16_t pattern = (i % 2) ? 0b01000100 : 0b00010001; // black-white : white-black
-            for (uint16_t j = 0; j < _bufferSizeH; j++)
+            for (uint16_t j = 0; j < u_bufferSizeH; j++)
             {
-                _newImage[i * _bufferSizeH + j] = pattern;
+                u_newImage[i * u_bufferSizeH + j] = pattern;
             }
         }
     }
-    else if ((colour == myColours.white) xor _invert)
+    else if ((colour == myColours.white) xor u_invert)
     {
         // physical black = 0-1
-        memset(_newImage, 0b01010101, _pageColourSize);
+        memset(u_newImage, 0b01010101, u_pageColourSize);
     }
-    else if ((colour == myColours.black) xor _invert)
+    else if ((colour == myColours.black) xor u_invert)
     {
         // physical white = 0-0
-        memset(_newImage, 0b00000000, _pageColourSize);
+        memset(u_newImage, 0b00000000, u_pageColourSize);
     }
     else if (colour == myColours.red)
     {
         // physical red = 1-1
-        memset(_newImage, 0b11111111, _pageColourSize);
+        memset(u_newImage, 0b11111111, u_pageColourSize);
     }
     else if (colour == myColours.darkRed)
     {
         // red = 1-1, black = 0-1
-        for (uint16_t i = 0; i < _bufferSizeV; i++)
+        for (uint16_t i = 0; i < u_bufferSizeV; i++)
         {
             uint16_t pattern = (i % 2) ? 0b11011101 : 0b01110111; // red-black : black-red
-            for (uint16_t j = 0; j < _bufferSizeH; j++)
+            for (uint16_t j = 0; j < u_bufferSizeH; j++)
             {
-                _newImage[i * _bufferSizeH + j] = pattern;
+                u_newImage[i * u_bufferSizeH + j] = pattern;
             }
         }
     }
     else if (colour == myColours.lightRed)
     {
         // red = 1-1, white = 0-0
-        for (uint16_t i = 0; i < _bufferSizeV; i++)
+        for (uint16_t i = 0; i < u_bufferSizeV; i++)
         {
             uint16_t pattern = (i % 2) ? 0b11001100 : 0b00110011; // red-white : white-red
-            for (uint16_t j = 0; j < _bufferSizeH; j++)
+            for (uint16_t j = 0; j < u_bufferSizeH; j++)
             {
-                _newImage[i * _bufferSizeH + j] = pattern;
+                u_newImage[i * u_bufferSizeH + j] = pattern;
             }
         }
     }
     else if (colour == myColours.yellow)
     {
         // physical yellow = 1-0
-        memset(_newImage, 0b10101010, _pageColourSize);
+        memset(u_newImage, 0b10101010, u_pageColourSize);
     }
     else if (colour == myColours.darkYellow)
     {
         // yellow = 1-0, black = 0-1
-        for (uint16_t i = 0; i < _bufferSizeV; i++)
+        for (uint16_t i = 0; i < u_bufferSizeV; i++)
         {
             uint16_t pattern = (i % 2) ? 0b10011001 : 0b01100110; // yellow-black : black-yellow
-            for (uint16_t j = 0; j < _bufferSizeH; j++)
+            for (uint16_t j = 0; j < u_bufferSizeH; j++)
             {
-                _newImage[i * _bufferSizeH + j] = pattern;
+                u_newImage[i * u_bufferSizeH + j] = pattern;
             }
         }
     }
     else if (colour == myColours.lightYellow)
     {
         // yellow = 1-0, white = 0-0
-        for (uint16_t i = 0; i < _bufferSizeV; i++)
+        for (uint16_t i = 0; i < u_bufferSizeV; i++)
         {
             uint16_t pattern = (i % 2) ? 0b10001000 : 0b00100010; // yellow-white : white-yellow
-            for (uint16_t j = 0; j < _bufferSizeH; j++)
+            for (uint16_t j = 0; j < u_bufferSizeH; j++)
             {
-                _newImage[i * _bufferSizeH + j] = pattern;
+                u_newImage[i * u_bufferSizeH + j] = pattern;
             }
         }
     }
     else if (colour == myColours.orange)
     {
         // yellow = 1-0, red = 1-1
-        for (uint16_t i = 0; i < _bufferSizeV; i++)
+        for (uint16_t i = 0; i < u_bufferSizeV; i++)
         {
             uint16_t pattern = (i % 2) ? 0b10111011 : 0b11101110; // yellow-red : red-yellow
-            for (uint16_t j = 0; j < _bufferSizeH; j++)
+            for (uint16_t j = 0; j < u_bufferSizeH; j++)
             {
-                _newImage[i * _bufferSizeH + j] = pattern;
+                u_newImage[i * u_bufferSizeH + j] = pattern;
             }
         }
     }
@@ -532,7 +534,7 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
         }
         else
         {
-            colour = _invert ? myColours.white : myColours.black; // white
+            colour = u_invert ? myColours.white : myColours.black; // white
         }
     }
     else if (colour == myColours.lightRed)
@@ -543,7 +545,7 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
         }
         else
         {
-            colour = _invert ? myColours.black : myColours.white; // black
+            colour = u_invert ? myColours.black : myColours.white; // black
         }
     }
     else if (colour == myColours.darkYellow)
@@ -585,29 +587,29 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
     uint16_t b1 = _getB(x1, y1);
 
     // Basic colours
-    if ((colour == myColours.black) xor _invert)
+    if ((colour == myColours.black) xor u_invert)
     {
         // physical white = 0-0
-        bitClear(_newImage[z1], b1 + 1); // MSB
-        bitClear(_newImage[z1], b1);
+        bitClear(u_newImage[z1], b1 + 1);  // MSB
+        bitClear(u_newImage[z1], b1);
     }
-    else if ((colour == myColours.white) xor _invert)
+    else if ((colour == myColours.white) xor u_invert)
     {
         // physical black = 0-1
-        bitClear(_newImage[z1], b1 + 1); // MSB
-        bitSet(_newImage[z1], b1);
+        bitClear(u_newImage[z1], b1 + 1);  // MSB
+        bitSet(u_newImage[z1], b1);
     }
     else if (colour == myColours.yellow)
     {
         // physical yellow = 1-0
-        bitSet(_newImage[z1], b1 + 1); // MSB
-        bitClear(_newImage[z1], b1);
+        bitSet(u_newImage[z1], b1 + 1);  // MSB
+        bitClear(u_newImage[z1], b1);
     }
     else if (colour == myColours.red)
     {
         // physical red = 1-1
-        bitSet(_newImage[z1], b1 + 1); // MSB
-        bitSet(_newImage[z1], b1);
+        bitSet(u_newImage[z1], b1 + 1);  // MSB
+        bitSet(u_newImage[z1], b1);
     }
 }
 
@@ -674,7 +676,7 @@ uint32_t Screen_EPD_EXT3::_getZ(uint16_t x1, uint16_t y1)
     // According to 11.98 inch Spectra Application Note
     // at http:// www.pervasivedisplays.com/LiteratureRetrieve.aspx?ID=245146
 
-    z1 = (uint32_t)x1 * _bufferSizeH + (y1 >> 2); // 4 pixels per byte
+    z1 = (uint32_t)x1 * u_bufferSizeH + (y1 >> 2); // 4 pixels per byte
 
     return z1;
 }
@@ -698,4 +700,7 @@ void Screen_EPD_EXT3::regenerate()
     clear(myColours.white);
     flush();
 }
+//
+// === End of Class section
+//
 

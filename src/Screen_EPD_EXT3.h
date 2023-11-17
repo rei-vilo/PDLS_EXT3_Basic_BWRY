@@ -18,8 +18,8 @@
 /// * 2.66 reference xE2266QS0Fx
 ///
 /// @author Rei Vilo
-/// @date 21 Sep 2023
-/// @version 700
+/// @date 21 Oct 2023
+/// @version 701
 ///
 /// @copyright (c) Rei Vilo, 2010-2023
 /// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
@@ -46,8 +46,13 @@
 // Board
 #include "hV_Board.h"
 
-// EPD utilities
-#include "hV_Utilities_EPD.h"
+// PDLS utilities
+#include "hV_Utilities_PDLS.h"
+
+// Checks
+#if (hV_HAL_PERIPHERALS_RELEASE < 700)
+#error Required hV_HAL_PERIPHERALS_RELEASE 700
+#endif // hV_HAL_PERIPHERALS_RELEASE
 
 #if (hV_CONFIGURATION_RELEASE < 700)
 #error Required hV_CONFIGURATION_RELEASE 700
@@ -65,7 +70,7 @@
 ///
 /// @brief Library release number
 ///
-#define SCREEN_EPD_EXT3_RELEASE 700
+#define SCREEN_EPD_EXT3_RELEASE 701
 
 ///
 /// @brief Library variant
@@ -91,7 +96,7 @@
 /// @note All commands work on the frame-buffer,
 /// to be displayed on screen with flush()
 ///
-class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_EPD
+class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
 {
   public:
     ///
@@ -183,7 +188,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_EPD
     /// @brief Convert
     /// @param x1 x-axis coordinate
     /// @param y1 y-axis coordinate
-    /// @return index for _newImage[]
+    /// @return index for u_newImage[]
     ///
     uint32_t _getZ(uint16_t x1, uint16_t y1);
 
@@ -191,7 +196,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_EPD
     /// @brief Convert
     /// @param x1 x-axis coordinate
     /// @param y1 y-axis coordinate
-    /// @return bit for _newImage[]
+    /// @return bit for u_newImage[]
     ///
     uint16_t _getB(uint16_t x1, uint16_t y1);
 
