@@ -23,11 +23,11 @@
 // #include <Arduino.h>
 #include "hV_HAL_Peripherals.h"
 
-// Confifuration
-#include "hV_Configuration.h"
-
 // Include application, user and local libraries
 // #include <SPI.h>
+
+// Configuration
+#include "hV_Configuration.h"
 
 // Set parameters
 #define DISPLAY_COLOURS_BWRY 0
@@ -118,7 +118,7 @@ void setup()
 
 #if (DISPLAY_CONTRASTS_BWRY == 1)
 
-    Serial.print("DISPLAY_CONTRASTS_BWRY... ");
+    Serial.println("DISPLAY_CONTRASTS_BWRY... ");
     myScreen.clear();
     displayContrastsBWRY();
     wait(8);

@@ -23,11 +23,11 @@
 // #include <Arduino.h>
 #include "hV_HAL_Peripherals.h"
 
-// Configuration
-#include "hV_Configuration.h"
-
 // Include application, user and local libraries
 // #include <SPI.h>
+
+// Configuration
+#include "hV_Configuration.h"
 
 // Set parameters
 #define DISPLAY_COLOURS_BWRY 0
@@ -209,6 +209,9 @@ void displayPaletteBWRY()
 #endif // DISPLAY_PALETTE_BWRY
 
 // Add setup code
+///
+/// @brief Setup
+///
 void setup()
 {
     Serial.begin(115200);
@@ -224,10 +227,9 @@ void setup()
 
 #if (DISPLAY_PALETTE_BWRY == 1)
 
-    Serial.print("DISPLAY_PALETTE_BWRY... ");
+    Serial.println("DISPLAY_PALETTE_BWRY... ");
     myScreen.clear();
     displayPaletteBWRY();
-    Serial.println("done");
     wait(8);
 
 #endif // DISPLAY_PALETTE_BWRY

@@ -25,6 +25,7 @@
 // Release 611: Added support for red and yellow colour screens
 // Release 700: Refactored screen and board functions
 // Release 701: Improved functions names consistency
+// Release 702: Added support for xE2417QS0Ax
 //
 
 // Library header
@@ -83,34 +84,65 @@ const uint8_t COG_initialData266QS[48] =
     0x44, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x37, 0x02, 0x02, 0x22, 0x78, 0xd0, 0x00, 0x00, 0x00,
 };
 
+const uint8_t COG_initialData417QS[48] =
+{
+    0xa5, 0x1c, 0x86, 0x04, 0x01, 0x53, 0x50, 0x51, 0x30, 0x31, 0x4a, 0x04, 0xff, 0xff, 0xff, 0xff,
+    0x07, 0x0f, 0x29, 0x01, 0x90, 0x01, 0x2c, 0xc4, 0xc2, 0x1d, 0x0f, 0x0d, 0xaf, 0x00, 0x10, 0x54,
+    0x44, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x08, 0x37, 0x02, 0x02, 0x22, 0xff, 0xff, 0xff, 0xff, 0xff,
+    // Remaining 48 bytes not used
+    //    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    //    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    //    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    //    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+};
+
 void Screen_EPD_EXT3::COG_initial()
 {
     // Work settings
-    //b_sendIndexData(0x01, &COG_initialData[16], 1); // PWR
     b_sendCommandData8(0x01, COG_initialData[16]); // PWR
     b_sendIndexData(0x00, &COG_initialData[17], 2); // PSR
     b_sendIndexData(0x03, &COG_initialData[30], 3); // PFS
-    b_sendIndexData(0x06, &COG_initialData[23], 7); // BTST_P
-    //b_sendIndexData(0x50, &COG_initialData[39], 1); // CDI
+
+    if (u_eScreen_EPD_EXT3 == eScreen_EPD_EXT3_417_BWRY)
+    {
+        if (COG_initialData[2] == 0x86)
+        {
+            b_sendIndexData(0x06, &COG_initialData[23], 3); // BTST_P
+        }
+        else if (COG_initialData[2] == 0x82)
+        {
+            b_sendIndexData(0x06, &COG_initialData[23], 4); // BTST_P
+        }
+        else
+        {
+            Serial.println();
+            Serial.println("* ERROR - CoG type not supported");
+            while(true);;
+        }
+    }
+    else
+    {
+        b_sendIndexData(0x06, &COG_initialData[23], 7); // BTST_P
+    }
+
     b_sendCommandData8(0x50, COG_initialData[39]); // CDI
     b_sendIndexData(0x60, &COG_initialData[40], 2); // TCON
     b_sendIndexData(0x61, &COG_initialData[19], 4); // TRES
-    //b_sendIndexData(0xE7, &COG_initialData[33], 1); //
     b_sendCommandData8(0xE7, COG_initialData[33]); //
-    //b_sendIndexData(0xE3, &COG_initialData[42], 1); // PWS
     b_sendCommandData8(0xE3, COG_initialData[42]); // PWS
-    //b_sendIndexData(0x4D, &COG_initialData[43], 1); //
-    b_sendCommandData8(0x4D, COG_initialData[43]); //
-    //b_sendIndexData(0xB4, &COG_initialData[44], 1); //
-    b_sendCommandData8(0xB4, COG_initialData[44]); //
-    //b_sendIndexData(0xB5, &COG_initialData[45], 1); //
-    b_sendCommandData8(0xB5, COG_initialData[45]); //
 
-    // uint8_t index_E9[] = {0x01};
-    //b_sendIndexData(0xE9, index_E9, 1); //
+    if (u_eScreen_EPD_EXT3 == eScreen_EPD_EXT3_417_BWRY)
+    {
+        b_sendIndexData(0x65, &COG_initialData[34], 4); // TRES
+    }
+    else
+    {
+        b_sendCommandData8(0x4D, COG_initialData[43]); //
+        b_sendCommandData8(0xB4, COG_initialData[44]); //
+        b_sendCommandData8(0xB5, COG_initialData[45]); //
+    }
+
     b_sendCommandData8(0xE9, 0x01); //
-    // uint8_t index_30[] = {0x08};
-    //b_sendIndexData(0x30, index_30, 1); // PLL
     b_sendCommandData8(0x30, 0x08); // PLL
 }
 
@@ -136,6 +168,11 @@ void Screen_EPD_EXT3::COG_getUserData()
             COG_initialData = COG_initialData266QS;
             break;
 
+        case 0x410a: // 4.17”
+
+            COG_initialData = COG_initialData417QS;
+            break;
+
         default:
 
             break;
@@ -144,17 +181,36 @@ void Screen_EPD_EXT3::COG_getUserData()
 
 void Screen_EPD_EXT3::COG_sendImageDataGlobal()
 {
+    if (u_eScreen_EPD_EXT3 == eScreen_EPD_EXT3_417_BWRY) // 417: 0x04 before sending image
+    {
+        b_sendCommand8(0x04); // Power on
+        digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
+        b_waitBusy();
+    }
+
+#if (SRAM_MODE == USE_INTERNAL_MCU)
+
     b_sendIndexData(0x10, u_newImage, u_frameSize); // First frame, blackBuffer
+
+#elif (SRAM_MODE == USE_EXTERNAL_SPI)
+
+    b_sendIndexDataSRAM(0x10, u_newImage, u_frameSize); // First frame
+
+#endif // SRAM_MODE
 }
 
 void Screen_EPD_EXT3::COG_update()
 {
-    b_sendCommand8(0x04); // Power on
-    digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
-    b_waitBusy();
+    if (u_eScreen_EPD_EXT3 == eScreen_EPD_EXT3_417_BWRY)
+    {
+    }
+    else // All except 417: 0x04 after sending image
+    {
+        b_sendCommand8(0x04); // Power on
+        digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
+        b_waitBusy();
+    }
 
-    // uint8_t data12[] = {0x00};
-    //b_sendIndexData(0x12, data12, 1); // Display Refresh
     b_sendCommandData8(0x12, 0x00); // Display Refresh
     digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
     b_waitBusy();
@@ -162,11 +218,18 @@ void Screen_EPD_EXT3::COG_update()
 
 void Screen_EPD_EXT3::COG_powerOff()
 {
-    uint8_t data02[] = {0x00};
-    //b_sendIndexData(0x02, data02, 1); // Turn off DC/DC
     b_sendCommandData8(0x02, 0x00); // Turn off DC/DC
     digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
     b_waitBusy();
+
+    if (u_eScreen_EPD_EXT3 == eScreen_EPD_EXT3_417_BWRY)
+    {
+        if (COG_initialData[43] == 0xff)
+        {
+            delay(5000);
+            b_sendIndexData(0x00, &COG_initialData[26], 2); // PSR
+        }
+    }
 }
 /// @endcond
 //
@@ -194,7 +257,7 @@ void Screen_EPD_EXT3::begin()
     if (not(u_codeExtra & FEATURE_RED_YELLOW))
     {
         Serial.println();
-        Serial.println("ERROR - Not a red and yellow screen");
+        Serial.println("* ERROR - Not a black-white-red-yellow screen");
         while (true);
     }
 
@@ -221,12 +284,19 @@ void Screen_EPD_EXT3::begin()
             _screenDiagonal = 266;
             break;
 
+        case 0x41: // 4.17"
+
+            _screenSizeV = 300; // vertical = wide size
+            _screenSizeH = 400; // horizontal = small size
+            _screenDiagonal = 417;
+            break;
+
         default:
 
             break;
     } // u_codeSize
 
-    u_bufferDepth = 1; // 1 buffer with 2 bits per pixel
+    u_bufferDepth = 1; // 1 single buffer with 2 bits per pixel
     u_bufferSizeV = _screenSizeV; // vertical = wide size
     u_bufferSizeH = _screenSizeH / 4; // horizontal = small size 112 / 4; 2 bits per pixel
 
@@ -507,7 +577,7 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
 {
     // Orient and check coordinates are within screen
     // _orientCoordinates() returns false = success, true = error
-    if (_orientCoordinates(x1, y1))
+    if (_orientCoordinates(x1, y1) == RESULT_ERROR)
     {
         return;
     }
@@ -590,25 +660,25 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
     if ((colour == myColours.black) xor u_invert)
     {
         // physical white = 0-0
-        bitClear(u_newImage[z1], b1 + 1);  // MSB
+        bitClear(u_newImage[z1], b1 + 1); // MSB
         bitClear(u_newImage[z1], b1);
     }
     else if ((colour == myColours.white) xor u_invert)
     {
         // physical black = 0-1
-        bitClear(u_newImage[z1], b1 + 1);  // MSB
+        bitClear(u_newImage[z1], b1 + 1); // MSB
         bitSet(u_newImage[z1], b1);
     }
     else if (colour == myColours.yellow)
     {
         // physical yellow = 1-0
-        bitSet(u_newImage[z1], b1 + 1);  // MSB
+        bitSet(u_newImage[z1], b1 + 1); // MSB
         bitClear(u_newImage[z1], b1);
     }
     else if (colour == myColours.red)
     {
         // physical red = 1-1
-        bitSet(u_newImage[z1], b1 + 1);  // MSB
+        bitSet(u_newImage[z1], b1 + 1); // MSB
         bitSet(u_newImage[z1], b1);
     }
 }
@@ -620,7 +690,7 @@ void Screen_EPD_EXT3::_setOrientation(uint8_t orientation)
 
 bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
 {
-    bool _flagError = true; // false = success, true = error
+    bool _flagResult = RESULT_ERROR; // false = success, true = error
     switch (_orientation)
     {
         case 3: // checked, previously 1
@@ -628,7 +698,7 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
             if ((x < _screenSizeV) and (y < _screenSizeH))
             {
                 x = _screenSizeV - 1 - x;
-                _flagError = false;
+                _flagResult = RESULT_SUCCESS;
             }
             break;
 
@@ -639,7 +709,7 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
                 x = _screenSizeH - 1 - x;
                 y = _screenSizeV - 1 - y;
                 swap(x, y);
-                _flagError = false;
+                _flagResult = RESULT_SUCCESS;
             }
             break;
 
@@ -648,7 +718,7 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
             if ((x < _screenSizeV) and (y < _screenSizeH))
             {
                 y = _screenSizeH - 1 - y;
-                _flagError = false;
+                _flagResult = RESULT_SUCCESS;
             }
             break;
 
@@ -657,12 +727,12 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
             if ((x < _screenSizeH) and (y < _screenSizeV))
             {
                 swap(x, y);
-                _flagError = false;
+                _flagResult = RESULT_SUCCESS;
             }
             break;
     }
 
-    return _flagError;
+    return _flagResult;
 }
 
 uint16_t Screen_EPD_EXT3::_getPoint(uint16_t x1, uint16_t y1)
@@ -702,5 +772,13 @@ void Screen_EPD_EXT3::regenerate()
 }
 //
 // === End of Class section
+//
+
+//
+// === Touch section
+//
+
+//
+// === End of Touch section
 //
 

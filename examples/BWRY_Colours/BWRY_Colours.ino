@@ -23,11 +23,11 @@
 // #include <Arduino.h>
 #include "hV_HAL_Peripherals.h"
 
-// Confifuration
-#include "hV_Configuration.h"
-
 // Include application, user and local libraries
 // #include <SPI.h>
+
+// Configuration
+#include "hV_Configuration.h"
 
 // Set parameters
 #define DISPLAY_COLOURS_BWRY 1
@@ -94,6 +94,9 @@ void displayColoursBWRY()
 #endif // DISPLAY_COLOURS_BWRY
 
 // Add setup code
+///
+/// @brief Setup
+///
 void setup()
 {
     Serial.begin(115200);
@@ -109,13 +112,10 @@ void setup()
 
 #if (DISPLAY_COLOURS_BWRY == 1)
 
-    Serial.print("DISPLAY_COLOURS_BWRY... ");
+    Serial.println("DISPLAY_COLOURS_BWRY... ");
     myScreen.clear();
     displayColoursBWRY();
-
     wait(8);
-
-    Serial.println("done");
 
 #endif // DISPLAY_COLOURS_BWRY
 
@@ -128,6 +128,9 @@ void setup()
 }
 
 // Add loop code
+///
+/// @brief Loop, empty
+///
 void loop()
 {
     delay(1000);
