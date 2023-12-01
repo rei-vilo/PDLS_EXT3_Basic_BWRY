@@ -107,7 +107,7 @@ class hV_Utilities_PDLS : public hV_Board
     ///
     void u_WhoAmI(char * answer);
 
-    // Screen dependent variables
+    // Frame-buffer
 #if (SRAM_MODE == USE_INTERNAL_MCU)
 
     uint8_t * u_newImage;
@@ -118,6 +118,7 @@ class hV_Utilities_PDLS : public hV_Board
 
 #endif // SRAM_MODE
 
+    // Screen dependent variables
     eScreen_EPD_EXT3_t u_eScreen_EPD_EXT3;
     int8_t u_temperature = 25;
     uint8_t u_codeExtra;
