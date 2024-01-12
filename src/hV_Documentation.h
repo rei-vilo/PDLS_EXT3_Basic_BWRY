@@ -18,8 +18,9 @@
 ///
 /// The basic edition includes different variants:
 ///
-/// * **PDLS_EXT3_Basic_Global** for [monochrome](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white) and [colour (black-white-red)](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red) screens;
+/// * **PDLS_EXT3_Basic** for [monochrome](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white) and [colour (black-white-red)](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red) screens;
 /// * **PDLS_EXT3_Basic_Fast** for [monochrome screens with embedded fast update](https://www.pervasivedisplays.com/product/2-71-e-ink-display-aurora-mb-v231/);
+/// * **PDLS_EXT3_Basic_Fast_152** for the 1.52 and 1.50 monochrome high-definition screens with embedded fast update;
 /// * **PDLS_EXT3_Basic_Touch** for [monochrome screens with capacitive touch](https://www.pervasivedisplays.com/product/2-71-e-ink-display-aurora-mb-v231/); and
 /// * **PDLS_EXT3_Basic_BWRY** for [black-white-red-yellow screens](https://www.pervasivedisplays.com/product/).
 ///
@@ -41,10 +42,10 @@
 /// Additionally, the **[Wiki](https://docs.pervasivedisplays.com/)** provides a gradual introduction to the e-paper technology and how to use it.
 ///
 /// @author Rei Vilo
-/// @date 21 Dec 2023
-/// @version 703
+/// @date 21 Nov 2023
+/// @version 702
 ///
-/// @copyright &copy; Rei Vilo, 2010-2023
+/// @copyright &copy; Rei Vilo, 2010-2024
 /// @copyright All rights reserved
 ///
 /// * Basic edition: for hobbyists and for basic usage

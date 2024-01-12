@@ -8,10 +8,10 @@
 /// * Edition: Advanced
 ///
 /// @author Rei Vilo
-/// @date 21 Aug 2023
-/// @version 700
+/// @date 21 Feb 2023
+/// @version 800
 ///
-/// @copyright (c) Rei Vilo, 2010-2023
+/// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright All rights reserved
 ///
 /// * Evaluation edition: for professionals or organisations, no commercial usage
@@ -35,8 +35,8 @@
 #error Required hV_HAL_PERIPHERALS_RELEASE 700
 #endif // hV_HAL_PERIPHERALS_RELEASE
 
-#if (hV_CONFIGURATION_RELEASE < 700)
-#error Required hV_CONFIGURATION_RELEASE 700
+#if (hV_CONFIGURATION_RELEASE < 800)
+#error Required hV_CONFIGURATION_RELEASE 800
 #endif // hV_CONFIGURATION_RELEASE
 
 #if (hV_BOARD_RELEASE < 700)
@@ -47,7 +47,7 @@
 ///
 /// @brief Library release number
 ///
-#define hV_UTILITIES_PDLS_RELEASE 700
+#define hV_UTILITIES_PDLS_RELEASE 800
 
 // Objects
 //
@@ -108,25 +108,27 @@ class hV_Utilities_PDLS : public hV_Board
     void u_WhoAmI(char * answer);
 
     // Frame-buffer
-#if (SRAM_MODE == USE_INTERNAL_MCU)
-
-    uint8_t * u_newImage;
-
-#elif (SRAM_MODE == USE_EXTERNAL_SPI)
-
-    uint32_t u_newImage;
-
-#endif // SRAM_MODE
+    // #if (SRAM_MODE == USE_INTERNAL_MCU)
+    // 
+    //     uint8_t * u_newImage;
+    // 
+    // #elif (SRAM_MODE == USE_EXTERNAL_SPI)
+    // 
+    //     uint32_t u_newImage;
+    // 
+    // #endif // SRAM_MODE
 
     // Screen dependent variables
-    eScreen_EPD_EXT3_t u_eScreen_EPD_EXT3;
+    eScreen_EPD_t u_eScreen_EPD;
     int8_t u_temperature = 25;
+    uint16_t u_codeSize;
+    uint8_t u_codeFilm;
+    uint8_t u_codeDriver;
     uint8_t u_codeExtra;
-    uint8_t u_codeSize;
-    uint8_t u_codeType;
     uint16_t u_bufferSizeV, u_bufferSizeH, u_bufferDepth;
     uint32_t u_pageColourSize, u_frameSize;
     bool u_invert = false;
+    bool u_flagOTP = false;
 
     /// @endcond
 };

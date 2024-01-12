@@ -6,10 +6,10 @@
 /// @n Based on highView technology
 ///
 /// @author Rei Vilo
-/// @date 21 Sep 2023
-/// @version 700
+/// @date 21 Feb 2024
+/// @version 800
 ///
-/// @copyright (c) Rei Vilo, 2010-2023
+/// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 ///
 /// The highView Library Suite is shared under the Creative Commons licence Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
@@ -26,7 +26,7 @@
 ///
 /// @brief Release
 ///
-#define hV_HAL_PERIPHERALS_RELEASE 700
+#define hV_HAL_PERIPHERALS_RELEASE 800
 
 ///
 /// @brief SDK library
@@ -48,5 +48,38 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
+
+#define mySerial Serial
+
+///
+/// @name 3-wire SPI bus
+/// @warning
+/// * Arduino does not support 3-wire PSI, bit-bang simulation 
+/// * Viewer: For compatibility only, not implemented in Linux
+/// @note hV_SDK_SPI_begin() calls hV_SDK_SPI3_begin().
+/// @{
+
+///
+/// @brief Set the 3-wire SPI pins
+/// @param pinClock clock, default = SCK
+/// @param pinData combined data, default = MOSI
+///
+void hV_HAL_SPI3_begin(uint8_t pinClock = SCK, uint8_t pinData = MOSI);
+
+///
+/// @brief Read a single byte
+/// @return read byte
+/// @note Configure the clock pin as output and data pin as input.
+/// @warning /CS to be managed externally.
+/// 
+uint8_t hV_HAL_SPI3_read();
+
+///
+/// @brief Write a single byte
+/// @param data byte
+/// @note Configure the clock and data pins as output.
+/// @warning /CS to be managed externally.
+///
+void hV_HAL_SPI3_write(uint8_t value);
 
 #endif // hV_HAL_PERIPHERALS_RELEASE

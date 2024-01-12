@@ -6,10 +6,10 @@
 /// @n Based on highView technology
 ///
 /// @author Rei Vilo
-/// @date 31 Aug 2023
-/// @version 614
+/// @date 21 Feb 2024
+/// @version 800
 ///
-/// @copyright (c) Rei Vilo, 2010-2023
+/// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 ///
 /// @see ReadMe.txt for references
@@ -29,6 +29,10 @@
 // Configuration
 #include "hV_Configuration.h"
 
+#if (SCREEN_EPD_EXT3_RELEASE < 800)
+#error Required SCREEN_EPD_EXT3_RELEASE 800
+#endif // SCREEN_EPD_EXT3_RELEASE
+
 // Set parameters
 #define DISPLAY_COLOURS_BWRY 0
 #define DISPLAY_CONTRASTS_BWRY 1
@@ -37,9 +41,9 @@
 // Define structures and classes
 
 // Define variables and constants
-Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_154_BWRY, boardRaspberryPiPico_RP2040);
-// Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_213_BWRY, boardRaspberryPiPico_RP2040);
-// Screen_EPD_EXT3 myScreen(eScreen_EPD_EXT3_266_BWRY, boardRaspberryPiPico_RP2040);
+// Screen_EPD_EXT3 myScreen(eScreen_EPD_154_QS_0F, boardRaspberryPiPico_RP2040);
+// Screen_EPD_EXT3 myScreen(eScreen_EPD_213_QS_0F, boardRaspberryPiPico_RP2040);
+Screen_EPD_EXT3 myScreen(eScreen_EPD_266_QS_0F, boardRaspberryPiPico_RP2040);
 
 // Prototypes
 

@@ -1,6 +1,6 @@
 # Pervasive Displays Library Suite - Basic Edition - Black-White-Red-Yellow
 
-[![Release](https://img.shields.io/github/v/release/rei-vilo/PDLS_EXT3_Basic_BWRY)](https://github.com/rei-vilo/PDLS_EXT3_Basic_BWRY/releases) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/77ecc9fa99834e299505f5f2a7c83e53)](https://app.codacy.com/gh/rei-vilo/PDLS_EXT3_Basic_BWRY/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rei-vilo/PDLS_EXT3_Basic_BWRY&amp;utm_campaign=Badge_Grade) ![Arduino lint](https://github.com/rei-vilo/PDLS_EXT3_Basic_BWRY/actions/workflows/main.yml/badge.svg) [![GitHub issues](https://img.shields.io/github/issues/rei-vilo/PDLS_EXT3_Basic_Global)](https://github.com/rei-vilo/PDLS_EXT3_Basic_Global/issues) [![](https://img.shields.io/badge/-Documentation-blue)](https://rei-vilo.github.io/PDLS_EXT3_Basic_Documentation/html/index.html) 
+[![Release](https://img.shields.io/github/v/release/rei-vilo/PDLS_EXT3_Basic)](https://github.com/rei-vilo/PDLS_EXT3_Basic_BWRY/releases) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/77ecc9fa99834e299505f5f2a7c83e53)](https://app.codacy.com/gh/rei-vilo/PDLS_EXT3_Basic_BWRY/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rei-vilo/PDLS_EXT3_Basic&amp;utm_campaign=Badge_Grade) ![Arduino lint](https://github.com/rei-vilo/PDLS_EXT3_Basic/actions/workflows/main.yml/badge.svg) [![GitHub issues](https://img.shields.io/github/issues/rei-vilo/PDLS_EXT3_Basic)](https://github.com/rei-vilo/PDLS_EXT3_Basic/issues) [![](https://img.shields.io/badge/-Documentation-blue)](https://rei-vilo.github.io/PDLS_EXT3_Basic_Documentation/html/index.html) 
 
 The Pervasive Displays Library Suite is specifically designed for the [Pervasive Displays](https://www.pervasivedisplays.com) e-paper screens and EXT3 extension board.
 
@@ -12,7 +12,7 @@ The **PDLS_EXT3_Basic_BWRY** provides a high-level interface to drive the e-pape
 + iTC [black-white-red-yellow colour](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow) screens; and
 + the [EPD Pico Kit (EPDK)](https://www.pervasivedisplays.com/product/epd-pico-kit-epdk/), which includes a Raspberry Pi Pico RP2040, an EXT3-1 extension board and a 2.66" monochrome panel.
 
-Please refer to [PDLS_EXT3_Basic_Global](https://github.com/rei-vilo/PDLS_EXT3_Basic_Global/issues) for reporting issues and contributing pull requests.
+Please refer to [PDLS_EXT3_Basic](https://github.com/rei-vilo/PDLS_EXT3_Basic/issues) for reporting issues and contributing pull requests.
 
 Basic colours | Ten colours | Contrasts 
 --- | --- | ---
@@ -55,8 +55,10 @@ Hardware
 
 ## Licence
 
-**Copyright** &copy; Rei Vilo, 2010-2023
+**Copyright** &copy; Rei Vilo, 2010-2024
 
 **Licence** [Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](./LICENCE.md)
 
 ![](img/by-sa.svg)
+
+**Portions** &copy; Pervasive Displays, 2010-2024

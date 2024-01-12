@@ -8,7 +8,7 @@
 //
 // Created by Rei Vilo, 28 Jun 2016
 //
-// Copyright (c) Rei Vilo, 2010-2023
+// Copyright (c) Rei Vilo, 2010-2024
 // Licence Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 //
 // See hV_Screen_Buffer.h for references
@@ -512,7 +512,9 @@ void hV_Screen_Buffer::triangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t 
     }
 }
 
-// Font functions
+//
+// === Font section
+//
 void hV_Screen_Buffer::setFontSolid(bool flag)
 {
     f_setFontSolid(flag);
@@ -667,11 +669,11 @@ void hV_Screen_Buffer::gText(uint16_t x0, uint16_t y0,
                 {
                     if (bitRead(line, j))
                     {
-                        point(x0 + 12 * k + i, y0 + j,    textColour);
+                        point(x0 + 12 * k + i, y0 + j, textColour);
                     }
                     else if (f_fontSolid)
                     {
-                        point(x0 + 12 * k + i, y0 + j,    backColour);
+                        point(x0 + 12 * k + i, y0 + j, backColour);
                     }
                     if (bitRead(line1, j))
                     {
@@ -693,26 +695,26 @@ void hV_Screen_Buffer::gText(uint16_t x0, uint16_t y0,
             c = text.charAt(k) - ' ';
             for (i = 0; i < 16; i++)
             {
-                line  = f_getCharacter(c, 3 * i);
+                line = f_getCharacter(c, 3 * i);
                 line1 = f_getCharacter(c, 3 * i + 1);
                 line2 = f_getCharacter(c, 3 * i + 2);
                 for (j = 0; j < 8; j++)
                 {
                     if (bitRead(line, j))
                     {
-                        point(x0 + 16 * k + i, y0 + j,     textColour);
+                        point(x0 + 16 * k + i, y0 + j, textColour);
                     }
                     else if (f_fontSolid)
                     {
-                        point(x0 + 16 * k + i, y0 + j,     backColour);
+                        point(x0 + 16 * k + i, y0 + j, backColour);
                     }
                     if (bitRead(line1, j))
                     {
-                        point(x0 + 16 * k + i, y0 + 8 + j,  textColour);
+                        point(x0 + 16 * k + i, y0 + 8 + j, textColour);
                     }
                     else if (f_fontSolid)
                     {
-                        point(x0 + 16 * k + i, y0 + 8 + j,  backColour);
+                        point(x0 + 16 * k + i, y0 + 8 + j, backColour);
                     }
                     if (bitRead(line2, j))
                     {
@@ -732,4 +734,7 @@ void hV_Screen_Buffer::gText(uint16_t x0, uint16_t y0,
 #endif // end MAX_FONT_SIZE > 0
 }
 #endif // FONT_MODE
+//
+// === End of Font section
+//
 

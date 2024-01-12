@@ -9,7 +9,7 @@
 /// @date 21 Sep 2023
 /// @version 700
 ///
-/// @copyright (c) Rei Vilo, 2010-2023
+/// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 ///
 /// The highView Library Suite is shared under the Creative Commons licence Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
@@ -32,7 +32,7 @@
 ///
 /// @brief Library release number
 ///
-#define hV_SCREEN_BUFFER_RELEASE 700
+#define hV_SCREEN_BUFFER_RELEASE 703
 
 // Other libraries
 #include "hV_Colours565.h"
@@ -395,6 +395,8 @@ class hV_Screen_Buffer : protected hV_Font_Terminal
     /// @return definition for line of character
     ///
     uint8_t _getCharacter(uint8_t character, uint8_t index);
+
+    uint8_t * u_newImage;
 
     // Variables provided by hV_Screen_Virtual
     bool _penSolid, _flagRead, _flagStorage, _flagEnergy;

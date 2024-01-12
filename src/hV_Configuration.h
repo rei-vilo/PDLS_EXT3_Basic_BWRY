@@ -19,10 +19,10 @@
 /// * 11. Set storage mode, not implemented
 ///
 /// @author Rei Vilo
-/// @date 21 Nov 2023
-/// @version 702
+/// @date 21 Feb 2024
+/// @version 800
 ///
-/// @copyright (c) Rei Vilo, 2010-2023
+/// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright All rights reserved
 ///
 /// * Basic edition: for hobbyists and for basic usage
@@ -62,15 +62,15 @@
 #error Required hV_LIST_BOARDS_RELEASE 700
 #endif // hV_LIST_BOARDS_RELEASE
 
-#if (hV_LIST_SCREENS_RELEASE < 702)
-#error Required hV_LIST_SCREENS_RELEASE 702
+#if (hV_LIST_SCREENS_RELEASE < 800)
+#error Required hV_LIST_SCREENS_RELEASE 800
 #endif // hV_LIST_SCREENS_RELEASE
 
 #ifndef hV_CONFIGURATION_RELEASE
 ///
 /// @brief Release
 ///
-#define hV_CONFIGURATION_RELEASE 702
+#define hV_CONFIGURATION_RELEASE 800
 
 ///
 /// @name 1- List of supported Pervasive Displays screens
