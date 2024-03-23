@@ -6,11 +6,21 @@
 /// @n Based on highView technology
 ///
 /// @author Rei Vilo
-/// @date 21 Feb 2024
-/// @version 800
+/// @date 21 Mar 2024
+/// @version 801
 ///
 /// @copyright (c) Rei Vilo, 2010-2024
-/// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+/// @copyright All rights reserved
+/// @copyright For exclusive use with Pervasive Displays screens
+///
+/// * Basic edition: for hobbyists and for basic usage
+/// @n Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+///
+/// * Evaluation edition: for professionals or organisations, no commercial usage
+/// @n All rights reserved
+///
+/// * Commercial edition: for professionals or organisations, commercial usage
+/// @n All rights reserved
 ///
 /// @see ReadMe.txt for references
 /// @n
@@ -29,8 +39,8 @@
 // Configuration
 #include "hV_Configuration.h"
 
-#if (SCREEN_EPD_EXT3_RELEASE < 800)
-#error Required SCREEN_EPD_EXT3_RELEASE 800
+#if (SCREEN_EPD_EXT3_RELEASE < 801)
+#error Required SCREEN_EPD_EXT3_RELEASE 801
 #endif // SCREEN_EPD_EXT3_RELEASE
 
 // Set parameters
@@ -56,10 +66,10 @@ void wait(uint8_t second)
 {
     for (uint8_t i = second; i > 0; i--)
     {
-        Serial.print(formatString(" > %i  \r", i));
+        mySerial.print(formatString(" > %i  \r", i));
         delay(1000);
     }
-    Serial.print("         \r");
+    mySerial.print("         \r");
 }
 
 // Functions
@@ -109,32 +119,32 @@ void displayContrastsBWRY()
 ///
 void setup()
 {
-    Serial.begin(115200);
+    mySerial.begin(115200);
     delay(500);
-    Serial.println();
-    Serial.println("=== " __FILE__);
-    Serial.println("=== " __DATE__ " " __TIME__);
-    Serial.println();
+    mySerial.println();
+    mySerial.println("=== " __FILE__);
+    mySerial.println("=== " __DATE__ " " __TIME__);
+    mySerial.println();
 
-    Serial.print("begin... ");
+    mySerial.print("begin... ");
     myScreen.begin();
-    Serial.println(formatString("%s %ix%i", myScreen.WhoAmI().c_str(), myScreen.screenSizeX(), myScreen.screenSizeY()));
+    mySerial.println(formatString("%s %ix%i", myScreen.WhoAmI().c_str(), myScreen.screenSizeX(), myScreen.screenSizeY()));
 
 #if (DISPLAY_CONTRASTS_BWRY == 1)
 
-    Serial.println("DISPLAY_CONTRASTS_BWRY... ");
+    mySerial.println("DISPLAY_CONTRASTS_BWRY... ");
     myScreen.clear();
     displayContrastsBWRY();
     wait(8);
 
 #endif // DISPLAY_CONTRASTS_BWRY
 
-    Serial.print("White... ");
+    mySerial.print("White... ");
     myScreen.clear();
     myScreen.flush();
 
-    Serial.println("=== ");
-    Serial.println();
+    mySerial.println("=== ");
+    mySerial.println();
 }
 
 // Add loop code

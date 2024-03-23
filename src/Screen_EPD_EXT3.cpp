@@ -10,6 +10,7 @@
 //
 // Copyright (c) Rei Vilo, 2010-2024
 // Licence Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+// For exclusive use with Pervasive Displays screens
 // Portions (c) Pervasive Displays, 2010-2024
 //
 // Release 508: Added support for E2969CS0B and E2B98CS0B
@@ -28,37 +29,11 @@
 // Release 701: Improved functions names consistency
 // Release 702: Added support for xE2417QS0Ax
 // Release 800: Read OTP memory
+// Release 801: Improved OTP implementation
 //
 
 // Library header
 #include "Screen_EPD_EXT3.h"
-
-#if defined(ENERGIA)
-///
-/// @brief Proxy for SPISettings
-/// @details Not implemented in Energia
-/// @see https://www.arduino.cc/en/Reference/SPISettings
-///
-struct _SPISettings_s
-{
-    uint32_t clock; ///< in Hz, checked against SPI_CLOCK_MAX = 16000000
-    uint8_t bitOrder; ///< LSBFIRST, MSBFIRST
-    uint8_t dataMode; ///< SPI_MODE0, SPI_MODE1, SPI_MODE2, SPI_MODE3
-};
-///
-/// @brief SPI settings for screen
-///
-_SPISettings_s _settingScreen;
-#else
-///
-/// @brief SPI settings for screen
-///
-SPISettings _settingScreen;
-#endif // ENERGIA
-
-#ifndef SPI_CLOCK_MAX
-#define SPI_CLOCK_MAX 16000000
-#endif
 
 //
 // === COG section
@@ -67,9 +42,13 @@ SPISettings _settingScreen;
 /// @see
 /// * ApplicationNote_Spectra_4_smallSize_EPD_v01_20230522.pdf
 //
-// Use of delay in µs before and after SPI
-// 0 = no, 1..500 = yes; recommended = 1
-#define USE_DELAY_US 1
+
+void Screen_EPD_EXT3::COG_reset()
+{
+    // Application note § 2. Power on COG driver
+    b_reset(10, 10, 20, 40, 10); // BWRY specific
+    b_waitBusy(); // BWRY specific
+}
 
 void Screen_EPD_EXT3::COG_initial()
 {
@@ -92,8 +71,8 @@ void Screen_EPD_EXT3::COG_initial()
         else
         {
             mySerial.println();
-            mySerial.println("* ERROR - CoG type not supported");
-            while(true);;
+            mySerial.println("hV * ERROR - CoG type not supported");
+            while (true);;
         }
     }
     else
@@ -122,34 +101,8 @@ void Screen_EPD_EXT3::COG_initial()
     b_sendCommandData8(0x30, 0x08); // PLL
 }
 
-void Screen_EPD_EXT3::COG_getUserData()
+void Screen_EPD_EXT3::COG_getDataOTP()
 {
-#if defined(ARDUINO_FEATHER_ESP32)
-
-    hV_HAL_SPI3_begin(SCK, MOSI) // SCK SDA
-
-#elif defined(ARDUINO_XIAO_ESP32C3)
-
-    // Board Xiao ESP32-C3 crashes if pins are not specified.
-    hV_HAL_SPI3_begin(8, 9) // SCK SDA
-
-#elif defined(ARDUINO_NANO_ESP32)
-
-    // Board Arduino Nano ESP32 arduino_nano_nora v2.0.11
-    hV_HAL_SPI3_begin(SCK, MOSI) // SCK SDA
-
-#elif defined(ARDUINO_ARCH_ESP32)
-
-    // void begin(int8_t sck=-1, int8_t miso=-1, int8_t mosi=-1, int8_t ss=-1);
-    // Board ESP32-Pico-DevKitM-2 crashes if pins are not specified.
-    hV_HAL_SPI3_begin(14, 12) // SCK SDA
-
-#else
-
-    hV_HAL_SPI3_begin(SCK, MOSI); // SCK SDA
-
-#endif // ARDUINO
-
     // 1.6 Read OTP memory mapping data
     uint16_t u_chipId;
     uint16_t u_readBytes;
@@ -177,6 +130,7 @@ void Screen_EPD_EXT3::COG_getUserData()
     }
 
     // GPIO
+    COG_reset();
     digitalWrite(b_pin.panelReset, HIGH);
 
     // Check
@@ -200,12 +154,12 @@ void Screen_EPD_EXT3::COG_getUserData()
     mySerial.println();
     if (ui16 == u_chipId)
     {
-        mySerial.println(formatString(". INFO - Check 1 passed - Chip ID %04x as expected", ui16));
+        mySerial.println(formatString("hV . OTP check 1 passed - Chip ID %04x as expected", ui16));
     }
     else
     {
-        mySerial.println(formatString("* ERROR - Check 1 failed - Chip ID 0x%04x, expected 0x%04x", ui16, u_chipId));
-        while(0x01);
+        mySerial.println(formatString("hV * OTP check 1 failed - Chip ID 0x%04x, expected 0x%04x", ui16, u_chipId));
+        while (0x01);
     }
 
     // Read OTP
@@ -253,8 +207,8 @@ void Screen_EPD_EXT3::COG_getUserData()
         }
         else
         {
-            mySerial.println(formatString("* ERROR - Check 2 failed - Bank %i, first 0x%02x, expected 0x%02x", 0, COG_initialData[0], 0xa5));
-            while(0x01);
+            mySerial.println(formatString("hV * OTP check 2 failed - Bank %i, first 0x%02x, expected 0x%02x", 0, COG_initialData[0], 0xa5));
+            while (true);
         }
     }
     else if (u_chipId == 0x0605)
@@ -320,13 +274,13 @@ void Screen_EPD_EXT3::COG_getUserData()
             }
             else
             {
-            mySerial.println(formatString("* ERROR - Check 2 failed - Bank %i, first 0x%02x, expected 0x%02x", 0, COG_initialData[0], 0xa5));
-            while(0x01);
+                mySerial.println(formatString("hV * OTP check 2 failed - Bank %i, first 0x%02x, expected 0x%02x", 0, COG_initialData[0], 0xa5));
+                while (0x01);
             }
         }
     }
 
-    mySerial.println(formatString(". INFO - Check 2 passed - Bank %i, first 0x%02x as expected", (offset > 0x00), COG_initialData[0]));
+    mySerial.println(formatString("hV . OTP check 2 passed - Bank %i, first 0x%02x as expected", (offset > 0x00), COG_initialData[0]));
 
     // Populate COG_initialData
     for (uint16_t index = 1; index < u_readBytes; index += 1)
@@ -337,28 +291,6 @@ void Screen_EPD_EXT3::COG_getUserData()
     }
 
     u_flagOTP = true;
-
-    /*
-    // Debug COG_initialData
-    mySerial.print(formatString("const uint8_t COG_initialData[%i] =", u_readBytes));
-    mySerial.println();
-    mySerial.print("{");
-    for (uint16_t index = 0; index < u_readBytes; index += 1)
-    {
-        if ((index % 8) == 0)
-        {
-            mySerial.println();
-            mySerial.print("   ");
-        }
-
-        mySerial.print(formatString("0x%02x", COG_initialData[index]));
-        mySerial.print(formatString("%s ", (index + 1 < u_readBytes ? "," : ""))); // no comma on last value
-    }
-    mySerial.println();
-
-    mySerial.print(formatString("} // %i", u_readBytes));
-    mySerial.println();
-    */
 }
 
 void Screen_EPD_EXT3::COG_sendImageDataGlobal()
@@ -433,63 +365,76 @@ Screen_EPD_EXT3::Screen_EPD_EXT3(eScreen_EPD_t eScreen_EPD_EXT3, pins_t board)
 
 void Screen_EPD_EXT3::begin()
 {
-    // u_eScreen_EPD = eScreen_EPD;
+    // u_eScreen_EPD = eScreen_EPD_EXT3;
     u_codeSize = SCREEN_SIZE(u_eScreen_EPD);
     u_codeFilm = SCREEN_FILM(u_eScreen_EPD);
     u_codeDriver = SCREEN_DRIVER(u_eScreen_EPD);
     u_codeExtra = SCREEN_EXTRA(u_eScreen_EPD);
-    _screenColourBits = 2; // BWR and BWRY
+    v_screenColourBits = 2; // BWR and BWRY
 
     // Checks
-    if (u_codeFilm != FILM_Q)
+    switch (u_codeFilm)
     {
-        mySerial.println();
-        mySerial.println("* ERROR - Not a black-white-red-yellow screen");
-        while (true);
-    }
+        case FILM_Q: // BWRY
 
-    switch (u_codeSize)
-    {
-        case SIZE_154: // 1.54"
-
-            _screenSizeV = 152; // vertical = wide size
-            _screenSizeH = 152; // horizontal = small size
-            // _screenDiagonal = 154;
-            break;
-
-        case SIZE_213: // 2.13"
-
-            _screenSizeV = 212; // vertical = wide size
-            _screenSizeH = 104; // horizontal = small size
-            // _screenDiagonal = 213;
-            break;
-
-        case SIZE_266: // 2.66"
-
-            _screenSizeV = 296; // vertical = wide size
-            _screenSizeH = 152; // horizontal = small size
-            // _screenDiagonal = 266;
-            break;
-
-        case SIZE_417: // 4.17"
-
-            _screenSizeV = 300; // vertical = wide size
-            _screenSizeH = 400; // horizontal = small size
-            // _screenDiagonal = 417;
             break;
 
         default:
 
+            mySerial.println();
+            mySerial.println(formatString("hV * Screen %i-%cS-0%c is not black-white-red-yellow", u_codeSize, u_codeFilm, u_codeDriver));
+            while (0x01);
+            break;
+    }
+
+    // Configure board
+    b_begin(b_pin, FAMILY_SMALL, 50);
+
+    // Sizes
+    switch (u_codeSize)
+    {
+        case SIZE_154: // 1.54"
+
+            v_screenSizeV = 152; // vertical = wide size
+            v_screenSizeH = 152; // horizontal = small size
+            break;
+
+        case SIZE_213: // 2.13"
+
+            v_screenSizeV = 212; // vertical = wide size
+            v_screenSizeH = 104; // horizontal = small size
+            break;
+
+        case SIZE_266: // 2.66"
+
+            v_screenSizeV = 296; // vertical = wide size
+            v_screenSizeH = 152; // horizontal = small size
+            break;
+
+        case SIZE_417: // 4.17"
+
+            v_screenSizeV = 300; // vertical = wide size
+            v_screenSizeH = 400; // horizontal = small size
+            break;
+
+        default:
+
+            mySerial.println();
+            mySerial.println(formatString("hV * Screen %i-%cS-0%c is not supported", u_codeSize, u_codeFilm, u_codeDriver));
+            while (0x01);
             break;
     } // u_codeSize
-    _screenDiagonal = u_codeSize;
+    v_screenDiagonal = u_codeSize;
 
-    _screenMarginV = 0;
-    _screenMarginH = 0;
+    // Report
+    mySerial.println(formatString("hV = Screen %s %ix%i", WhoAmI().c_str(), screenSizeX(), screenSizeY()));
+    mySerial.println(formatString("hV = Number %i-%cS-0%c", u_codeSize, u_codeFilm, u_codeDriver));
+    mySerial.println(formatString("hV = PDLS %s v%i.%i.%i", SCREEN_EPD_EXT3_VARIANT, SCREEN_EPD_EXT3_RELEASE / 100, (SCREEN_EPD_EXT3_RELEASE / 10) % 10, SCREEN_EPD_EXT3_RELEASE % 10));
+    mySerial.println();
 
     u_bufferDepth = 1; // 1 single buffer with 2 bits per pixel
-    u_bufferSizeV = _screenSizeV; // vertical = wide size
-    u_bufferSizeH = _screenSizeH / 4; // horizontal = small size 112 / 4; 2 bits per pixel
+    u_bufferSizeV = v_screenSizeV; // vertical = wide size
+    u_bufferSizeH = v_screenSizeH / 4; // horizontal = small size 112 / 4; 2 bits per pixel
 
     // Force conversion for two unit16_t multiplication into uint32_t.
     // Actually for 1 colour; BWR requires 2 pages.
@@ -521,109 +466,25 @@ void Screen_EPD_EXT3::begin()
 
     memset(u_newImage, 0x00, u_pageColourSize * u_bufferDepth);
 
-    // Initialise the /CS pins
-    pinMode(b_pin.panelCS, OUTPUT);
-    digitalWrite(b_pin.panelCS, HIGH); // CS# = 1
+    // Turn SPI on, initialise GPIOs and set GPIO levels
+    // Reset panel and get tables
+    resume();
 
-    // New generic solution
-    pinMode(b_pin.panelDC, OUTPUT);
-    pinMode(b_pin.panelReset, OUTPUT);
-    pinMode(b_pin.panelBusy, INPUT); // All Pins 0
-
-    // Initialise Flash /CS as HIGH
-    if (b_pin.flashCS != NOT_CONNECTED)
-    {
-        pinMode(b_pin.flashCS, OUTPUT);
-        digitalWrite(b_pin.flashCS, HIGH);
-    }
-
-    // Initialise slave panel /CS as HIGH
-    if (b_pin.panelCSS != NOT_CONNECTED)
-    {
-        pinMode(b_pin.panelCSS, OUTPUT);
-        digitalWrite(b_pin.panelCSS, HIGH);
-    }
-
-    // Initialise slave Flash /CS as HIGH
-    if (b_pin.flashCSS != NOT_CONNECTED)
-    {
-        pinMode(b_pin.flashCSS, OUTPUT);
-        digitalWrite(b_pin.flashCSS, HIGH);
-    }
-
-    // Initialise SD-card /CS as HIGH
-    if (b_pin.cardCS != NOT_CONNECTED)
-    {
-        pinMode(b_pin.cardCS, OUTPUT);
-        digitalWrite(b_pin.cardCS, HIGH);
-    }
-
-    // Read OTP memory
-    COG_getUserData();
-
-    // Initialise SPI
-    _settingScreen = {16000000, MSBFIRST, SPI_MODE0};
-
-#if defined(ENERGIA)
-
-    SPI.begin();
-    SPI.setBitOrder(_settingScreen.bitOrder);
-    SPI.setDataMode(_settingScreen.dataMode);
-    SPI.setClockDivider(SPI_CLOCK_MAX / min(SPI_CLOCK_MAX, _settingScreen.clock));
-
-#else
-
-#if defined(ARDUINO_XIAO_ESP32C3)
-
-    // Board Xiao ESP32-C3 crashes if pins are specified.
-    SPI.begin(8, 9, 10); // SCK MISO MOSI
-
-#elif defined(ARDUINO_NANO_ESP32)
-
-    // Board Arduino Nano ESP32 arduino_nano_nora v2.0.11
-    SPI.begin();
-
-#elif defined(ARDUINO_ARCH_ESP32)
-
-    // Board ESP32-Pico-DevKitM-2 crashes if pins are not specified.
-    SPI.begin(14, 12, 13); // SCK MISO MOSI
-
-#else
-
-    SPI.begin();
-
-#endif // ARDUINO_ARCH_ESP32
-
-    SPI.beginTransaction(_settingScreen);
-
-#endif // ENERGIA
-
-    // Reset
-    b_reset(10, 10, 20, 40, 10); // specific
-    b_waitBusy(); // specific
-
-    // Check type and get tables
-    // COG_getUserData(); // nothing sent to panel
-
-    // Standard
-    hV_Screen_Buffer::begin();
-
-    setOrientation(0);
+    // Fonts
+    hV_Screen_Buffer::begin(); // Standard
     if (f_fontMax() > 0)
     {
         f_selectFont(0);
     }
     f_fontSolid = false;
 
-    _penSolid = false;
+    // Orientation
+    setOrientation(0);
+
+    v_penSolid = false;
     u_invert = false;
 
-    // Report
-    mySerial.println(formatString("= Screen %s %ix%i", WhoAmI().c_str(), screenSizeX(), screenSizeY()));
-    mySerial.println(formatString("= Number %i-%cS-0%c", u_codeSize, u_codeFilm, u_codeDriver));
-    mySerial.println(formatString("= PDLS %s v%i.%i.%i", SCREEN_EPD_EXT3_VARIANT, SCREEN_EPD_EXT3_RELEASE / 100, (SCREEN_EPD_EXT3_RELEASE / 10) % 10, SCREEN_EPD_EXT3_RELEASE % 10));
-
-    clear();
+    setTemperatureC(25); // 25 Celsius = 77 Fahrenheit
 }
 
 String Screen_EPD_EXT3::WhoAmI()
@@ -631,7 +492,25 @@ String Screen_EPD_EXT3::WhoAmI()
     char work[64] = {0};
     u_WhoAmI(work);
 
-    return formatString("iTC %i.%02i\"%s", _screenDiagonal / 100, _screenDiagonal % 100, work);
+    return formatString("iTC %i.%02i\"%s", v_screenDiagonal / 100, v_screenDiagonal % 100, work);
+}
+
+void Screen_EPD_EXT3::resume()
+{
+    b_resume();
+
+    // Check type and get tables
+    if (u_flagOTP == false)
+    {
+        hV_HAL_SPI3_begin(); // Define 3-wire SPI pins
+        COG_getDataOTP(); // 3-wire SPI read OTP memory
+    }
+
+    // Reset
+    COG_reset();
+
+    // Start SPI
+    hV_HAL_SPI_begin(16000000); // Fast 16 MHz
 }
 
 uint8_t Screen_EPD_EXT3::flushMode(uint8_t updateMode)
@@ -643,12 +522,13 @@ uint8_t Screen_EPD_EXT3::flushMode(uint8_t updateMode)
         case UPDATE_FAST:
         case UPDATE_GLOBAL:
 
-            _flushGlobal();
+            s_flushGlobal();
             break;
 
         default:
 
-            mySerial.println("* PDLS - UPDATE_NONE invoked");
+            mySerial.println();
+            mySerial.println("hV * UPDATE_NONE invoked");
             break;
     }
 
@@ -660,7 +540,7 @@ void Screen_EPD_EXT3::flush()
     flushMode(UPDATE_GLOBAL);
 }
 
-void Screen_EPD_EXT3::_flushGlobal()
+void Screen_EPD_EXT3::s_flushGlobal()
 {
     // Initialise
     COG_initial();
@@ -670,6 +550,7 @@ void Screen_EPD_EXT3::_flushGlobal()
 
     // Update
     COG_update();
+
     COG_powerOff();
 }
 
@@ -769,11 +650,16 @@ void Screen_EPD_EXT3::clear(uint16_t colour)
     }
 }
 
-void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
+void Screen_EPD_EXT3::regenerate(uint8_t mode)
+{
+    clear();
+    flush();
+}
+
+void Screen_EPD_EXT3::s_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
 {
     // Orient and check coordinates are within screen
-    // _orientCoordinates() returns false = success, true = error
-    if (_orientCoordinates(x1, y1) == RESULT_ERROR)
+    if (s_orientCoordinates(x1, y1) == RESULT_ERROR)
     {
         return;
     }
@@ -849,8 +735,8 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
     }
 
     // Coordinates
-    uint32_t z1 = _getZ(x1, y1);
-    uint16_t b1 = _getB(x1, y1);
+    uint32_t z1 = s_getZ(x1, y1);
+    uint16_t b1 = s_getB(x1, y1);
 
     // Basic colours
     if ((colour == myColours.black) xor u_invert)
@@ -879,31 +765,31 @@ void Screen_EPD_EXT3::_setPoint(uint16_t x1, uint16_t y1, uint16_t colour)
     }
 }
 
-void Screen_EPD_EXT3::_setOrientation(uint8_t orientation)
+void Screen_EPD_EXT3::s_setOrientation(uint8_t orientation)
 {
-    _orientation = orientation % 4;
+    v_orientation = orientation % 4;
 }
 
-bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
+bool Screen_EPD_EXT3::s_orientCoordinates(uint16_t & x, uint16_t & y)
 {
     bool _flagResult = RESULT_ERROR; // false = success, true = error
-    switch (_orientation)
+    switch (v_orientation)
     {
         case 3: // checked, previously 1
 
-            if ((x < _screenSizeV) and (y < _screenSizeH))
+            if ((x < v_screenSizeV) and (y < v_screenSizeH))
             {
-                x = _screenSizeV - 1 - x;
+                x = v_screenSizeV - 1 - x;
                 _flagResult = RESULT_SUCCESS;
             }
             break;
 
         case 2: // checked
 
-            if ((x < _screenSizeH) and (y < _screenSizeV))
+            if ((x < v_screenSizeH) and (y < v_screenSizeV))
             {
-                x = _screenSizeH - 1 - x;
-                y = _screenSizeV - 1 - y;
+                x = v_screenSizeH - 1 - x;
+                y = v_screenSizeV - 1 - y;
                 swap(x, y);
                 _flagResult = RESULT_SUCCESS;
             }
@@ -911,16 +797,16 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
 
         case 1: // checked, previously 3
 
-            if ((x < _screenSizeV) and (y < _screenSizeH))
+            if ((x < v_screenSizeV) and (y < v_screenSizeH))
             {
-                y = _screenSizeH - 1 - y;
+                y = v_screenSizeH - 1 - y;
                 _flagResult = RESULT_SUCCESS;
             }
             break;
 
         default: // checked
 
-            if ((x < _screenSizeH) and (y < _screenSizeV))
+            if ((x < v_screenSizeH) and (y < v_screenSizeV))
             {
                 swap(x, y);
                 _flagResult = RESULT_SUCCESS;
@@ -931,23 +817,18 @@ bool Screen_EPD_EXT3::_orientCoordinates(uint16_t & x, uint16_t & y)
     return _flagResult;
 }
 
-uint16_t Screen_EPD_EXT3::_getPoint(uint16_t x1, uint16_t y1)
-{
-    return 0x0000;
-}
-
-uint32_t Screen_EPD_EXT3::_getZ(uint16_t x1, uint16_t y1)
+uint32_t Screen_EPD_EXT3::s_getZ(uint16_t x1, uint16_t y1)
 {
     uint32_t z1 = 0;
     // According to 11.98 inch Spectra Application Note
-    // at http:// www.pervasivedisplays.com/LiteratureRetrieve.aspx?ID=245146
+    // at http://www.pervasivedisplays.com/LiteratureRetrieve.aspx?ID=245146
 
     z1 = (uint32_t)x1 * u_bufferSizeH + (y1 >> 2); // 4 pixels per byte
 
     return z1;
 }
 
-uint16_t Screen_EPD_EXT3::_getB(uint16_t x1, uint16_t y1)
+uint16_t Screen_EPD_EXT3::s_getB(uint16_t x1, uint16_t y1)
 {
     uint16_t b1 = 0;
 
@@ -956,15 +837,9 @@ uint16_t Screen_EPD_EXT3::_getB(uint16_t x1, uint16_t y1)
     return b1;
 }
 
-void Screen_EPD_EXT3::regenerate()
+uint16_t Screen_EPD_EXT3::s_getPoint(uint16_t x1, uint16_t y1)
 {
-    clear(myColours.black);
-    flush();
-
-    delay(100);
-
-    clear(myColours.white);
-    flush();
+    return 0x0000;
 }
 //
 // === End of Class section

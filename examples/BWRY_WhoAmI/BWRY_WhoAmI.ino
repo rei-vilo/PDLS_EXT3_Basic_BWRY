@@ -1,5 +1,5 @@
 ///
-/// @file BWRY_Colours.ino
+/// @file BWRY_WhoAmI.ino
 /// @brief Example for Pervasive Displays Library Suite
 ///
 /// @details Project Pervasive Displays Library Suite
@@ -21,7 +21,6 @@
 ///
 /// * Commercial edition: for professionals or organisations, commercial usage
 /// @n All rights reserved
-///
 ///
 /// @see ReadMe.txt for references
 /// @n
@@ -45,9 +44,10 @@
 #endif // SCREEN_EPD_EXT3_RELEASE
 
 // Set parameters
-#define DISPLAY_COLOURS_BWRY 1
-#define DISPLAY_CONTRASTS_BWRY 0
-#define DISPLAY_PALETTE_BWRY 0
+#define DISPLAY_COLOURS_BWRY 0
+#define DISPLAY_CONTRASTS_BWRY 1
+#define DISPLAY_PALETTE_BWRY 1
+#define DISPLAY_WHOAMI 1
 
 // Define structures and classes
 
@@ -74,39 +74,54 @@ void wait(uint8_t second)
 }
 
 // Functions
-#if (DISPLAY_COLOURS_BWRY == 1)
+#if (DISPLAY_WHOAMI == 1)
 
-void displayColoursBWRY()
+///
+/// @brief Who am i? test screen
+///
+/// @image html T2_WHOAMI.jpg
+/// @image latex T2_WHOAMI.PDF width=10cm
+///
+void displayWhoAmI()
 {
-    myScreen.setOrientation(ORIENTATION_PORTRAIT);
-    myScreen.setPenSolid(false);
-    myScreen.selectFont(Font_Terminal8x12);
+    myScreen.setOrientation(ORIENTATION_LANDSCAPE);
+    myScreen.selectFont(Font_Terminal12x16);
 
-    uint16_t x, y, dx, dy;
-
-    const uint8_t grid = 4; // 4 or 5
-
-    x = myScreen.screenSizeX();
-    y = myScreen.screenSizeY();
-    dx = x / 1;
-    dy = y / 4;
-
+    uint16_t x = 4;
+    uint16_t y = 4;
+    uint16_t dy = myScreen.characterSizeY();
+    myScreen.gText(x, y, myScreen.WhoAmI());
+    y += dy;
+    myScreen.gText(x, y, formatString("Size %i x %i", myScreen.screenSizeX(), myScreen.screenSizeY()));
+    y += dy;
+    myScreen.gText(x, y, myScreen.screenNumber());
+    y += dy;
+    myScreen.gText(x, y, formatString("PDLS %s v%i.%i.%i", SCREEN_EPD_EXT3_VARIANT, SCREEN_EPD_EXT3_RELEASE / 100, (SCREEN_EPD_EXT3_RELEASE / 10) % 10, SCREEN_EPD_EXT3_RELEASE % 10));
+    y += dy;
     myScreen.setPenSolid(true);
-    myScreen.dRectangle(dx * 0, dy * 0, dx, dy, myColours.black);
-    myScreen.dRectangle(dx * 0, dy * 1, dx, dy, myColours.white);
-    myScreen.dRectangle(dx * 0, dy * 2, dx, dy, myColours.red);
-    myScreen.dRectangle(dx * 0, dy * 3, dx, dy, myColours.yellow);
+    myScreen.dRectangle(x + dy * 0, y, dy - 1, dy - 1, myColours.black);
+    myScreen.setPenSolid(false);
+    myScreen.dRectangle(x + dy * 1, y, dy - 1, dy - 1, myColours.black);
+    myScreen.setPenSolid(true);
 
-    myScreen.setFontSolid(false);
-    myScreen.gText(dx * 0 + 4, dy * 0 + 4, "Black", myColours.white);
-    myScreen.gText(dx * 0 + 4, dy * 1 + 4, "White", myColours.black);
-    myScreen.gText(dx * 0 + 4, dy * 2 + 4, "Red", myColours.white);
-    myScreen.gText(dx * 0 + 4, dy * 3 + 4, "Yellow", myColours.black);
+    uint8_t number = myScreen.screenColours();
+
+    if (number >= 3)
+    {
+        myScreen.dRectangle(x + dy * 2, y, dy - 1, dy - 1, myColours.red);
+
+#if defined(WITH_COLOURS_BWRY)
+        if (number == 4)
+        {
+            myScreen.dRectangle(x + dy * 3, y, dy - 1, dy - 1, myColours.yellow);
+        }
+#endif // WITH_COLOURS_BWRY
+    }
 
     myScreen.flush();
 }
 
-#endif // DISPLAY_COLOURS_BWRY
+#endif // DISPLAY_WHOAMI
 
 // Add setup code
 ///
@@ -125,14 +140,15 @@ void setup()
     myScreen.begin();
     mySerial.println(formatString("%s %ix%i", myScreen.WhoAmI().c_str(), myScreen.screenSizeX(), myScreen.screenSizeY()));
 
-#if (DISPLAY_COLOURS_BWRY == 1)
+#if (DISPLAY_WHOAMI == 1)
 
-    mySerial.println("DISPLAY_COLOURS_BWRY... ");
+    mySerial.println("DISPLAY_WHOAMI... ");
     myScreen.clear();
-    displayColoursBWRY();
+    displayWhoAmI();
+
     wait(8);
 
-#endif // DISPLAY_COLOURS_BWRY
+#endif // DISPLAY_WHOAMI
 
     mySerial.print("White... ");
     myScreen.clear();

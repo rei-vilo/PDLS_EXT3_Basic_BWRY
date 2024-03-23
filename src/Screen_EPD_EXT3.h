@@ -10,7 +10,6 @@
 /// * Family: Small
 /// * Update: Global
 /// * Feature: none
-/// * Temperature: black-white-red-yellow = 0 to 40 °C
 ///
 /// @n Supported black-white-red-yellow colour screens
 /// * EPD_154_QS_0F screen 1.54”
@@ -19,21 +18,31 @@
 /// * EPD_417_QS_0A screen 4.17”
 ///
 /// @author Rei Vilo
-/// @date 21 Feb 2024
-/// @version 800
+/// @date 21 Mar 2024
+/// @version 801
 ///
 /// @copyright (c) Rei Vilo, 2010-2024
-/// @copyright Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+/// @copyright All rights reserved
+/// @copyright For exclusive use with Pervasive Displays screens
 /// @copyright Portions (c) Pervasive Displays, 2010-2024
-///
-/// The highView Library Suite is shared under the Creative Commons licence Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
 ///
 /// * Basic edition: for hobbyists and for basic usage
 /// @n Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
-///
 /// @see https://creativecommons.org/licenses/by-sa/4.0/
 ///
 /// @n Consider the Evaluation or Commercial editions for professionals or organisations and for commercial usage
+///
+/// * Evaluation edition: for professionals or organisations, evaluation only, no commercial usage
+/// @n All rights reserved
+///
+/// * Commercial edition: for professionals or organisations, commercial usage
+/// @n All rights reserved
+///
+/// * Viewer edition: for professionals or organisations
+/// @n All rights reserved
+///
+/// * Documentation
+/// @n All rights reserved
 ///
 
 // SDK
@@ -52,27 +61,27 @@
 #include "hV_Utilities_PDLS.h"
 
 // Checks
-#if (hV_HAL_PERIPHERALS_RELEASE < 700)
-#error Required hV_HAL_PERIPHERALS_RELEASE 700
+#if (hV_HAL_PERIPHERALS_RELEASE < 801)
+#error Required hV_HAL_PERIPHERALS_RELEASE 801
 #endif // hV_HAL_PERIPHERALS_RELEASE
 
-#if (hV_CONFIGURATION_RELEASE < 702)
-#error Required hV_CONFIGURATION_RELEASE 702
+#if (hV_CONFIGURATION_RELEASE < 801)
+#error Required hV_CONFIGURATION_RELEASE 801
 #endif // hV_CONFIGURATION_RELEASE
 
-#if (hV_SCREEN_BUFFER_RELEASE < 700)
-#error Required hV_SCREEN_BUFFER_RELEASE 700
+#if (hV_SCREEN_BUFFER_RELEASE < 801)
+#error Required hV_SCREEN_BUFFER_RELEASE 801
 #endif // hV_SCREEN_BUFFER_RELEASE
 
-#if (hV_BOARD_RELEASE < 700)
-#error Required hV_BOARD_RELEASE 700
+#if (hV_BOARD_RELEASE < 801)
+#error Required hV_BOARD_RELEASE 801
 #endif // hV_BOARD_RELEASE
 
 #ifndef SCREEN_EPD_EXT3_RELEASE
 ///
 /// @brief Library release number
 ///
-#define SCREEN_EPD_EXT3_RELEASE 800
+#define SCREEN_EPD_EXT3_RELEASE 801
 
 ///
 /// @brief Library variant
@@ -82,9 +91,17 @@
 // Other libraries
 #include "hV_Screen_Buffer.h"
 
-#if (hV_SCREEN_BUFFER_RELEASE < 700)
-#error Required hV_SCREEN_BUFFER_RELEASE 700
+#if (hV_SCREEN_BUFFER_RELEASE < 801)
+#error Required hV_SCREEN_BUFFER_RELEASE 801
 #endif // hV_SCREEN_BUFFER_RELEASE
+
+///
+/// @name Constants for features
+/// @{
+#define WITH_COLOURS ///< With colours
+#define WITH_COLOURS_BWR ///< Black-White-Red colours
+#define WITH_COLOURS_BWRY ///< Black-White-Red-Yellow colours
+/// @}
 
 // Objects
 //
@@ -118,6 +135,12 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     void begin();
 
     ///
+    /// @brief Resume after suspend()
+    /// @details Turn SPI on and set all GPIOs levels
+    ///
+    void resume();
+
+    ///
     /// @brief Who Am I
     /// @return Who Am I string
     ///
@@ -132,20 +155,23 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
 
     ///
     /// @brief Update the display, global update
-    /// @note Send the frame-buffer to the screen and refresh the screen
+    /// @note
+    /// 1. Send the frame-buffer to the screen
+    /// 2. Refresh the screen
     ///
     void flush();
 
     ///
     /// @brief Regenerate the panel
     /// @details White-to-black-to-white cycle to reduce ghosting
+    /// @param mode default = UPDATE_GLOBAL = global mode
     ///
-    void regenerate();
+    void regenerate(uint8_t mode = UPDATE_GLOBAL);
 
     ///
     /// @brief Update the display
     /// @details Display next frame-buffer on screen and copy next frame-buffer into old frame-buffer
-    /// @param updateMode expected update mode
+    /// @param updateMode expected update mode, default = UPDATE_GLOBAL
     /// @return uint8_t recommended mode
     /// @note Mode checked with checkTemperatureMode()
     ///
@@ -159,7 +185,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @brief Set orientation
     /// @param orientation 1..3, 6, 7
     ///
-    void _setOrientation(uint8_t orientation); // compulsory
+    void s_setOrientation(uint8_t orientation); // compulsory
 
     ///
     /// @brief Check and orient coordinates, logical coordinates
@@ -167,7 +193,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @param y y-axis coordinate, modified
     /// @return RESULT_SUCCESS = false = success, RESULT_ERROR = true = error
     ///
-    bool _orientCoordinates(uint16_t & x, uint16_t & y); // compulsory
+    bool s_orientCoordinates(uint16_t & x, uint16_t & y); // compulsory
 
     // Write and Read
     /// @brief Set point
@@ -176,7 +202,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @param colour 16-bit colour
     /// @n @b More: @ref Colour, @ref Coordinate
     ///
-    void _setPoint(uint16_t x1, uint16_t y1, uint16_t colour);
+    void s_setPoint(uint16_t x1, uint16_t y1, uint16_t colour);
 
     /// @brief Get point
     /// @param x1 x coordinate
@@ -184,7 +210,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @return colour 16-bit colour
     /// @n @b More: @ref Colour, @ref Coordinate
     ///
-    uint16_t _getPoint(uint16_t x1, uint16_t y1);
+    uint16_t s_getPoint(uint16_t x1, uint16_t y1);
 
     // Position
     ///
@@ -193,7 +219,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @param y1 y-axis coordinate
     /// @return index for u_newImage[]
     ///
-    uint32_t _getZ(uint16_t x1, uint16_t y1);
+    uint32_t s_getZ(uint16_t x1, uint16_t y1);
 
     ///
     /// @brief Convert
@@ -201,7 +227,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @param y1 y-axis coordinate
     /// @return bit for u_newImage[]
     ///
-    uint16_t _getB(uint16_t x1, uint16_t y1);
+    uint16_t s_getB(uint16_t x1, uint16_t y1);
 
     //
     // === Energy section
@@ -212,15 +238,17 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     //
 
     // * Other functions specific to the screen
-    uint8_t COG_initialData[112];
+    uint8_t COG_initialData[112]; // OTP
+
+    void COG_reset();
     void COG_initial();
-    void COG_getUserData();
+    void COG_getDataOTP();
     void COG_sendImageDataGlobal();
     void COG_update();
     void COG_powerOff();
 
     // * Flush
-    void _flushGlobal();
+    void s_flushGlobal();
 
     //
     // === Touch section

@@ -10,19 +10,29 @@
 /// * 1- List of supported Pervasive Displays screens
 ///
 /// @author Rei Vilo
-/// @date 21 Feb 2024
-/// @version 800
+/// @date 21 Mar 2024
+/// @version 801
 ///
 /// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright All rights reserved
+/// @copyright For exclusive use with Pervasive Displays screens
 ///
 /// * Basic edition: for hobbyists and for basic usage
 /// @n Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+/// @see https://creativecommons.org/licenses/by-sa/4.0/
+///
+/// @n Consider the Evaluation or Commercial editions for professionals or organisations and for commercial usage
 ///
 /// * Evaluation edition: for professionals or organisations, evaluation only, no commercial usage
 /// @n All rights reserved
 ///
 /// * Commercial edition: for professionals or organisations, commercial usage
+/// @n All rights reserved
+///
+/// * Viewer edition: for professionals or organisations
+/// @n All rights reserved
+///
+/// * Documentation
 /// @n All rights reserved
 ///
 
@@ -33,7 +43,12 @@
 ///
 /// @brief Release
 ///
-#define hV_LIST_SCREENS_RELEASE 800
+#define hV_LIST_SCREENS_RELEASE 801
+
+/// @deprecated Screen name format (8.0.0)
+/// * Name format eScreen_EPD_EXT3_<size>_<driver>_<suffix> is deprecated (8.0.0).
+/// * Use name format eScreen_EPD_<size>_<film>_<driver> instead (8.0.0).
+///
 
 ///
 /// @brief Screen type
@@ -42,12 +57,12 @@
 
 ///
 /// @brief Function for screen macros
-/// 
+///
 #define SCREEN(S, F, D) ((uint32_t)((S & 0x0fff) << 16 | (F & 0xff) << 8 | (D & 0xff)))
 
 ///
 /// @brief Function for extra macros
-/// 
+///
 #define EXTRA(E) ((uint32_t)((E & 0x0f) << 28))
 
 ///
@@ -67,10 +82,12 @@
 #define SIZE_154 154 ///< 1.54"
 #define SIZE_206 206 ///< 2.06"
 #define SIZE_213 213 ///< 2.13"
+#define SIZE_215 215 ///< 2.15"
 #define SIZE_266 266 ///< 2.66"
 #define SIZE_271 271 ///< 2.71"
 #define SIZE_287 287 ///< 2.87"
 #define SIZE_290 290 ///< 2.90"
+#define SIZE_343 343 ///< 3.43"
 #define SIZE_350 350 ///< 3.50"
 #define SIZE_370 370 ///< 3.70"
 #define SIZE_417 417 ///< 4.17"
@@ -79,37 +96,41 @@
 #define SIZE_581 581 ///< 5.81"
 #define SIZE_741 741 ///< 7.41"
 #define SIZE_969 969 ///< 9.69"
-#define SIZE_1198 1198 ///< 11.98"
+#define SIZE_B98 1198 ///< 11.98"
+#define SIZE_1198 1198 ///< 11.98", synonym for SIZE_B98
 /// @}
 
 ///
 /// @name Film type, mask 0xff
 /// @{
 ///
-#define FILM_C 'C' ///< Film CS, Standard
-#define FILM_E 'E' ///< Film ES, BWR, deprecated
-#define FILM_F 'F' ///< Film ES, BWR, deprecated
-#define FILM_G 'G' ///< Film GS, BWY, deprecated
-#define FILM_H 'H' ///< Film HS, Freeze
-#define FILM_J 'J' ///< Film JS, BWR, "Spectra"
-#define FILM_K 'K' ///< Film KS, Fast update + Wide temperature
-#define FILM_P 'P' ///< Film PS, Fast update
-#define FILM_Q 'Q' ///< Film QS, BWRY, "Spectra 4"
+#define FILM_C 'C' ///< Film C, Standard
+#define FILM_E 'E' ///< Film E, BWR, deprecated
+#define FILM_F 'F' ///< Film E, BWR, deprecated
+#define FILM_G 'G' ///< Film G, BWY, deprecated
+#define FILM_H 'H' ///< Film H, Freezer
+#define FILM_J 'J' ///< Film J, BWR, "Spectra"
+#define FILM_K 'K' ///< Film K, Fast update + Wide temperature
+#define FILM_P 'P' ///< Film P, Fast update
+#define FILM_Q 'Q' ///< Film Q, BWRY, "Spectra 4"
 /// @}
 
 ///
 /// @name Driver type, mask 0xff
 /// @{
 ///
-#define DRIVER_9 '9' ///< Driver 09
-#define DRIVER_A 'A' ///< Driver 0A
-#define DRIVER_B 'B' ///< Driver 0B
-#define DRIVER_C 'C' ///< Driver 0C
-#define DRIVER_D 'D' ///< Driver 0D
-#define DRIVER_E 'E' ///< Driver 0E
-#define DRIVER_F 'F' ///< Driver 0F
-#define DRIVER_H 'H' ///< Driver 0H
-#define DRIVER_J 'J' ///< Driver 0J
+#define DRIVER_5 '5' ///< Driver 5
+#define DRIVER_6 '6' ///< Driver 6
+#define DRIVER_8 '8' ///< Driver 8
+#define DRIVER_9 '9' ///< Driver 9
+#define DRIVER_A 'A' ///< Driver A
+#define DRIVER_B 'B' ///< Driver B
+#define DRIVER_C 'C' ///< Driver C
+#define DRIVER_D 'D' ///< Driver D
+#define DRIVER_E 'E' ///< Driver E
+#define DRIVER_F 'F' ///< Driver F
+#define DRIVER_H 'H' ///< Driver H
+#define DRIVER_J 'J' ///< Driver J
 /// @}
 
 ///
@@ -255,13 +276,11 @@
 #define eScreen_EPD_266_KS_0C SCREEN(SIZE_266, FILM_K, DRIVER_C) ///< reference xE2266KS0Cx
 #define eScreen_EPD_271_KS_09 SCREEN(SIZE_271, FILM_K, DRIVER_9) ///< reference xE2271KS09x
 #define eScreen_EPD_271_KS_0C SCREEN(SIZE_271, FILM_K, DRIVER_C) ///< reference xE2271KS0Cx
-// /// @todo eScreen_EPD_287_KS_09 not tested
-// #define eScreen_EPD_287_KS_09 SCREEN(SIZE_287, FILM_K, DRIVER_9) ///< reference xE2287PS09x, not tested
 #define eScreen_EPD_290_KS_0F SCREEN(SIZE_290, FILM_K, DRIVER_F) ///< reference xE2290KS0Fx
 #define eScreen_EPD_370_KS_0C SCREEN(SIZE_370, FILM_K, DRIVER_C) ///< reference xE2370KS0Cx
 #define eScreen_EPD_417_KS_0D SCREEN(SIZE_417, FILM_K, DRIVER_D) ///< reference xE2417KS0Dx
-// /// @todo eScreen_EPD_437_KS_0C not tested
-// #define eScreen_EPD_437_KS_0C SCREEN(SIZE_437, FILM_K, DRIVER_C) ///< reference xE2437KS0Cx, not tested
+/// @todo eScreen_EPD_437_KS_0C not tested
+#define eScreen_EPD_437_KS_0C SCREEN(SIZE_437, FILM_K, DRIVER_C) ///< reference xE2437KS0Cx, not tested
 // /// @todo eScreen_EPD_581_KS_0B not tested
 // #define eScreen_EPD_581_KS_0B SCREEN(SIZE_581, FILM_K, DRIVER_B) ///< reference xE2581KS0Bx, not tested
 // /// @todo eScreen_EPD_741_KS_0B not tested
@@ -293,6 +312,7 @@
 #define frameSize_EPD_271 (uint32_t)(11616) ///< reference xE2271xS0xx
 #define frameSize_EPD_287 (uint32_t)(9472) ///< reference xE2287xS0xx
 #define frameSize_EPD_290 (uint32_t)(16128) ///< reference xE2290xS0xx
+#define frameSize_EPD_343 (uint32_t)(22344) ///< reference xE2343xS0xx
 #define frameSize_EPD_350 (uint32_t)(24960) ///< reference xE2350xS0xx
 #define frameSize_EPD_370 (uint32_t)(24960) ///< reference xE2370xS0xx
 #define frameSize_EPD_417 (uint32_t)(30000) ///< reference xE2417xS0xx
