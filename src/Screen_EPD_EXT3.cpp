@@ -163,7 +163,7 @@ void Screen_EPD_EXT3::COG_getDataOTP()
     }
 
     // Read OTP
-    uint8_t ui8 = 0;
+    // uint8_t ui8 = 0;
     uint16_t offset = 0x0000;
 
     if (u_chipId == 0x0302)
@@ -192,7 +192,8 @@ void Screen_EPD_EXT3::COG_getDataOTP()
 
         digitalWrite(b_pin.panelDC, HIGH); // Data
         digitalWrite(b_pin.panelCS, LOW); // Select
-        ui8 = hV_HAL_SPI3_read();
+        hV_HAL_SPI3_read(); // Dummy
+        // ui8 = hV_HAL_SPI3_read();
         digitalWrite(b_pin.panelCS, HIGH); // Unselect
         // hV_HAL_log(LEVEL_DEBUG, "Dummy read 0x%02x", ui8);
 
@@ -242,7 +243,8 @@ void Screen_EPD_EXT3::COG_getDataOTP()
 
         digitalWrite(b_pin.panelDC, HIGH); // Data
         digitalWrite(b_pin.panelCS, LOW); // Select
-        ui8 = hV_HAL_SPI3_read(); // Dummy
+        hV_HAL_SPI3_read(); // Dummy
+        // ui8 = hV_HAL_SPI3_read(); // Dummy
         digitalWrite(b_pin.panelCS, HIGH); // Unselect
         // hV_HAL_log(LEVEL_DEBUG, "Dummy read 0x%02x", ui8);
 
@@ -361,6 +363,7 @@ Screen_EPD_EXT3::Screen_EPD_EXT3(eScreen_EPD_t eScreen_EPD_EXT3, pins_t board)
     u_eScreen_EPD = eScreen_EPD_EXT3;
     b_pin = board;
     u_newImage = 0; // nullptr
+    COG_initialData[0] = 0;
 }
 
 void Screen_EPD_EXT3::begin()
