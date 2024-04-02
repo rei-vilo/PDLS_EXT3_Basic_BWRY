@@ -119,6 +119,7 @@ void displayContrastsBWRY()
 ///
 void setup()
 {
+    // mySerial = Serial by default, otherwise edit hV_HAL_Peripherals.h
     mySerial.begin(115200);
     delay(500);
     mySerial.println();
