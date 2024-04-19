@@ -9,8 +9,7 @@ The Pervasive Displays Library Suite is specifically designed for the [Pervasive
 The **PDLS_EXT3_Basic_BWRY** provides a high-level interface to drive the e-paper black-white-red-yellow colour screens with global update:
 
 + [EPD Extension Kit Gen 3 (EXT3 or EXT3-1)](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-3-EXT3/); 
-+ iTC [black-white-red-yellow colour](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow) screens; and
-+ the [EPD Pico Kit (EPDK)](https://www.pervasivedisplays.com/product/epd-pico-kit-epdk/), which includes a Raspberry Pi Pico RP2040, an EXT3-1 extension board and a 2.66" monochrome panel.
++ iTC [black-white-red-yellow colour](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow) screens (film `QS`).
 
 Please refer to [PDLS_EXT3_Basic](https://github.com/rei-vilo/PDLS_EXT3_Basic/issues) for reporting issues and contributing pull requests.
 
