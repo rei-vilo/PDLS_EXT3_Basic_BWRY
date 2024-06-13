@@ -18,8 +18,8 @@
 /// * EPD_417_QS_0A screen 4.17”
 ///
 /// @author Rei Vilo
-/// @date 21 Mar 2024
-/// @version 801
+/// @date 21 May 2024
+/// @version 803
 ///
 /// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright All rights reserved
@@ -65,8 +65,8 @@
 #error Required hV_HAL_PERIPHERALS_RELEASE 801
 #endif // hV_HAL_PERIPHERALS_RELEASE
 
-#if (hV_CONFIGURATION_RELEASE < 801)
-#error Required hV_CONFIGURATION_RELEASE 801
+#if (hV_CONFIGURATION_RELEASE < 803)
+#error Required hV_CONFIGURATION_RELEASE 803
 #endif // hV_CONFIGURATION_RELEASE
 
 #if (hV_SCREEN_BUFFER_RELEASE < 801)
@@ -81,19 +81,12 @@
 ///
 /// @brief Library release number
 ///
-#define SCREEN_EPD_EXT3_RELEASE 801
+#define SCREEN_EPD_EXT3_RELEASE 803
 
 ///
 /// @brief Library variant
 ///
 #define SCREEN_EPD_EXT3_VARIANT "Basic-BWRY"
-
-// Other libraries
-#include "hV_Screen_Buffer.h"
-
-#if (hV_SCREEN_BUFFER_RELEASE < 801)
-#error Required hV_SCREEN_BUFFER_RELEASE 801
-#endif // hV_SCREEN_BUFFER_RELEASE
 
 ///
 /// @name Constants for features
@@ -135,6 +128,12 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     void begin();
 
     ///
+    /// @brief Suspend
+    /// @details Turn SPI off and set all GPIOs low
+    ///
+    void suspend();
+
+    ///
     /// @brief Resume after suspend()
     /// @details Turn SPI on and set all GPIOs levels
     ///
@@ -144,7 +143,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @brief Who Am I
     /// @return Who Am I string
     ///
-    String WhoAmI();
+    virtual STRING_TYPE WhoAmI();
 
     ///
     /// @brief Clear the screen
@@ -212,12 +211,28 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     ///
     uint16_t s_getPoint(uint16_t x1, uint16_t y1);
 
+    ///
+    /// @brief Reset the screen
+    ///
+    void s_reset();
+
+    ///
+    /// @brief Get data from OTP
+    ///
+    void s_getDataOTP();
+
+    ///
+    /// @brief Update the screen
+    /// @param updateMode update mode, default = UPDATE_GLOBAL, otherwise UPDATE_FAST
+    ///
+    void s_flush(uint8_t updateMode = UPDATE_GLOBAL);
+
     // Position
     ///
     /// @brief Convert
     /// @param x1 x-axis coordinate
     /// @param y1 y-axis coordinate
-    /// @return index for u_newImage[]
+    /// @return index for s_newImage[]
     ///
     uint32_t s_getZ(uint16_t x1, uint16_t y1);
 
@@ -225,7 +240,7 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     /// @brief Convert
     /// @param x1 x-axis coordinate
     /// @param y1 y-axis coordinate
-    /// @return bit for u_newImage[]
+    /// @return bit for s_newImage[]
     ///
     uint16_t s_getB(uint16_t x1, uint16_t y1);
 
@@ -238,17 +253,14 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
     //
 
     // * Other functions specific to the screen
-    uint8_t COG_initialData[112]; // OTP
+    uint8_t COG_data[112]; // OTP
 
-    void COG_reset();
-    void COG_initial();
-    void COG_getDataOTP();
-    void COG_sendImageDataGlobal();
-    void COG_update();
-    void COG_powerOff();
-
-    // * Flush
-    void s_flushGlobal();
+    void COG_SmallQ_reset();
+    void COG_SmallQ_getDataOTP();
+    void COG_SmallQ_initial();
+    void COG_SmallQ_sendImageData();
+    void COG_SmallQ_update();
+    void COG_SmallQ_powerOff();
 
     //
     // === Touch section
