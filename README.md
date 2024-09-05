@@ -25,11 +25,13 @@ Basic colours | Ten colours | Contrasts
 + Graphics routines
 + Text routines
 + Extended colours
-+ Four extended fonts
++ Four extended fonts with double-sized variants
 
 ## Documentation and support
 
-+ Go to the [documentation](https://rei-vilo.github.io/PDLS_EXT3_Basic_Documentation/index.html) 
++ [Wiki](https://docs.pervasivedisplays.com/) 
++ [User guide](https://pdls.pervasivedisplays.com/userguide/index.html) with commented examples
++ [Reference manual](https://rei-vilo.github.io/PDLS_EXT3_Basic_Documentation/index.html) 
 + For support, please refer to [PDLS_EXT3_Basic_Global](https://github.com/rei-vilo/PDLS_EXT3_Basic_Global/issues) for reporting issues and contributing pull requests.
 
 ## Installation

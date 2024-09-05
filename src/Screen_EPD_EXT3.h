@@ -18,8 +18,8 @@
 /// * EPD_417_QS_0A screen 4.17”
 ///
 /// @author Rei Vilo
-/// @date 21 Jul 2024
-/// @version 804
+/// @date 21 Aug 2024
+/// @version 805
 ///
 /// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright All rights reserved
@@ -69,8 +69,8 @@
 #error Required hV_CONFIGURATION_RELEASE 803
 #endif // hV_CONFIGURATION_RELEASE
 
-#if (hV_SCREEN_BUFFER_RELEASE < 801)
-#error Required hV_SCREEN_BUFFER_RELEASE 801
+#if (hV_SCREEN_BUFFER_RELEASE < 805)
+#error Required hV_SCREEN_BUFFER_RELEASE 805
 #endif // hV_SCREEN_BUFFER_RELEASE
 
 #if (hV_BOARD_RELEASE < 801)
@@ -81,7 +81,7 @@
 ///
 /// @brief Library release number
 ///
-#define SCREEN_EPD_EXT3_RELEASE 804
+#define SCREEN_EPD_EXT3_RELEASE 805
 
 ///
 /// @brief Library variant
@@ -129,11 +129,11 @@ class Screen_EPD_EXT3 final : public hV_Screen_Buffer, public hV_Utilities_PDLS
 
     ///
     /// @brief Suspend
-    /// @param bus include SPI bus, default = SCOPE_GPIO_ONLY, otherwise SCOPE_NONE
+    /// @param suspendScope default = POWER_SCOPE_GPIO_ONLY, otherwise POWER_SCOPE_NONE
     /// @details Power off and set all GPIOs low
-    /// @note If panelPower is NOT_CONNECTED, SCOPE_GPIO_ONLY defaults to SCOPE_NONE
+    /// @note If panelPower is NOT_CONNECTED, POWER_SCOPE_GPIO_ONLY defaults to POWER_SCOPE_NONE
     ///
-    void suspend(uint8_t suspendScope = SCOPE_GPIO_ONLY);
+    void suspend(uint8_t suspendScope = POWER_SCOPE_GPIO_ONLY);
 
     ///
     /// @brief Resume after suspend()
