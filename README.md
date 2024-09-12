@@ -1,6 +1,7 @@
 # Pervasive Displays Library Suite - Basic Edition - Black-White-Red-Yellow
 
 [![Release](https://img.shields.io/github/v/release/rei-vilo/PDLS_EXT3_Basic)](https://github.com/rei-vilo/PDLS_EXT3_Basic_BWRY/releases) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/77ecc9fa99834e299505f5f2a7c83e53)](https://app.codacy.com/gh/rei-vilo/PDLS_EXT3_Basic_BWRY/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rei-vilo/PDLS_EXT3_Basic&amp;utm_campaign=Badge_Grade) ![Arduino lint](https://github.com/rei-vilo/PDLS_EXT3_Basic/actions/workflows/main.yml/badge.svg) [![GitHub issues](https://img.shields.io/github/issues/rei-vilo/PDLS_EXT3_Basic)](https://github.com/rei-vilo/PDLS_EXT3_Basic/issues)
+
 [![](https://img.shields.io/badge/-Wiki-orange)](https://docs.pervasivedisplays.com/) [![](https://img.shields.io/badge/-User_Guide-orange)](https://pdls.pervasivedisplays.com/userguide/index.html) [![](https://img.shields.io/badge/-Reference_manual-orange)](
 https://rei-vilo.github.io/PDLS_EXT3_Basic_Documentation/html/index.html)
 
