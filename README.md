@@ -1,28 +1,28 @@
-# Pervasive Displays Library Suite - Basic Edition - Black-White-Red-Yellow
+# Pervasive Displays Library Suite - Basic edition - Black-White-Red-Yellow
 
-[![Release](https://img.shields.io/github/v/release/rei-vilo/PDLS_EXT3_Basic)](https://github.com/rei-vilo/PDLS_EXT3_Basic_BWRY/releases) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/77ecc9fa99834e299505f5f2a7c83e53)](https://app.codacy.com/gh/rei-vilo/PDLS_EXT3_Basic_BWRY/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rei-vilo/PDLS_EXT3_Basic&amp;utm_campaign=Badge_Grade) ![Arduino lint](https://github.com/rei-vilo/PDLS_EXT3_Basic/actions/workflows/main.yml/badge.svg) [![GitHub issues](https://img.shields.io/github/issues/rei-vilo/PDLS_EXT3_Basic)](https://github.com/rei-vilo/PDLS_EXT3_Basic/issues)
+[![Release](https://img.shields.io/github/v/release/rei-vilo/PDLS_EXT3_Basic_BWRY)](https://github.com/rei-vilo/PDLS_EXT3_Basic_BWRY/releases) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/77ecc9fa99834e299505f5f2a7c83e53)](https://app.codacy.com/gh/rei-vilo/PDLS_EXT3_Basic_BWRY/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rei-vilo/PDLS_EXT3_Basic&amp;utm_campaign=Badge_Grade) ![Arduino lint](https://github.com/rei-vilo/PDLS_EXT3_Basic_BWRY/actions/workflows/main.yml/badge.svg) [![GitHub issues](https://img.shields.io/github/issues/rei-vilo/PDLS_EXT3_Basic_Global)](https://github.com/rei-vilo/PDLS_EXT3_Basic/issues)
 
 [![](https://img.shields.io/badge/-Wiki-orange)](https://docs.pervasivedisplays.com/) [![](https://img.shields.io/badge/-User_Guide-orange)](https://pdls.pervasivedisplays.com/userguide/index.html) [![](https://img.shields.io/badge/-Reference_manual-orange)](https://rei-vilo.github.io/PDLS_EXT3_Basic_Documentation/html/index.html)
 
 The Pervasive Displays Library Suite is specifically designed for the [Pervasive Displays](https://www.pervasivedisplays.com) e-paper screens, extension boards and evaluation kits.
 
-![](https://pdls.pervasivedisplays.com/userguide/img/Logo_PDI_text_320.png)
+<center>![](https://pdls.pervasivedisplays.com/userguide/img/Logo_PDI_text_320.png)</center>
 
 The **PDLS_EXT3_Basic_BWRY** supports the screens
 
-* iTC [black-white-red-yellow colour](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow) screens (film `QS`);
+* iTC [black-white-red-yellow colour](https://www.pervasivedisplays.com/products/?_sft_product_colour=black-white-red-yellow) screens (film `Q`);
 
 the boards
 
-* [EPD Extension Kit Gen 3 (EXT3 or EXT3-1)](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-3-EXT3/). 
+* [EPD Extension Kit Gen 3 (EXT3 or EXT3.1)](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-3-EXT3/). 
+
+## Features
 
 Basic colours | Ten colours | Contrasts 
 --- | --- | ---
 ![](img/BWRY_Colours.png) | ![](img/BWRY_Palette.png) | ![](img/BWRY_Contrasts.png)
 
 *By combining the four **basic colours**, black, white, red and yellow, six other colours are obtained: grey, light red, dark red, light yellow, dark yellow and orange, totalling **ten colours**, with high **contrasts** for high-impact messages.*
-
-## Features
 
 The Pervasive Displays Library Suite provides a high-level interface to drive the e-paper screens.
 
@@ -46,6 +46,7 @@ The Pervasive Displays Library Suite provides a high-level interface to drive th
 
 Software
 
+* [Arduino IDE](https://www.arduino.cc/en/software) or [Arduino CLI](https://arduino.github.io/arduino-cli/)
 * [Installing Additional Arduino Libraries](https://www.arduino.cc/en/guide/libraries)
 
     + Using the Library Manager
@@ -64,8 +65,8 @@ Software
 
 Hardware
 
-* Pervasive Displays EPD Extension Kit Gen 3 (EXT3 or EXT3-1)
-* Pervasive Displays iTC colour (black-white-red-yellow) screens (film `QS`) 
+* Pervasive Displays EPD Extension Kit Gen 3 (EXT3 or EXT3.1)
+* Pervasive Displays iTC colour (black-white-red-yellow) screens (film `Q`)
 
 ## Licence
 
@@ -78,3 +79,4 @@ For exclusive use with Pervasive Displays screens
 ![](img/by-sa.svg)
 
 **Portions** &copy; Pervasive Displays, 2010-2024
+

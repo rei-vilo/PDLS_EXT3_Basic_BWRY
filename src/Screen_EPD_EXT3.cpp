@@ -13,7 +13,7 @@
 // For exclusive use with Pervasive Displays screens
 // Portions (c) Pervasive Displays, 2010-2024
 //
-// Release 508: Added support for E2969CS0B and E2B98CS0B
+// Release 508: Added support for 969_CS_0B and B98_CS_0B
 // Release 511: Improved stability for external SPI SRAM
 // Release 529: Added support for pixmap file
 // Release 530: Added support for external SRAM
@@ -27,7 +27,7 @@
 // Release 611: Added support for red and yellow colour screens
 // Release 700: Refactored screen and board functions
 // Release 701: Improved functions names consistency
-// Release 702: Added support for xE2417QS0Ax
+// Release 702: Added support for 417_QS_0A
 // Release 800: Read OTP memory
 // Release 801: Improved OTP implementation
 // Release 802: Added references to application notes
@@ -35,6 +35,7 @@
 // Release 803: Added types for string and frame-buffer
 // Release 804: Improved power management
 // Release 805: Improved stability
+// Release 806: New library for Wide temperature only
 //
 
 // Library header
@@ -281,7 +282,7 @@ void Screen_EPD_EXT3::COG_SmallQ_initial()
             {
                 mySerial.println();
                 mySerial.println("hV * ERROR - CoG type not supported");
-                while (true);;
+                while (true);
             }
             break;
 
@@ -475,7 +476,8 @@ void Screen_EPD_EXT3::begin()
     v_screenDiagonal = u_codeSize;
 
     // Report
-    mySerial.println(formatString("hV = Screen %s %ix%i", WhoAmI().c_str(), screenSizeX(), screenSizeY()));
+    mySerial.println(formatString("hV = Screen %s", WhoAmI().c_str()));
+    mySerial.println(formatString("hV = Size %ix%i", screenSizeX(), screenSizeY()));
     mySerial.println(formatString("hV = Number %i-%cS-0%c", u_codeSize, u_codeFilm, u_codeDriver));
     mySerial.println(formatString("hV = PDLS %s v%i.%i.%i", SCREEN_EPD_EXT3_VARIANT, SCREEN_EPD_EXT3_RELEASE / 100, (SCREEN_EPD_EXT3_RELEASE / 10) % 10, SCREEN_EPD_EXT3_RELEASE % 10));
     mySerial.println();
@@ -512,7 +514,10 @@ void Screen_EPD_EXT3::begin()
 
     setTemperatureC(25); // 25 Celsius = 77 Fahrenheit
     b_fsmPowerScreen = FSM_OFF;
-    setPowerProfile(POWER_MODE_AUTO, POWER_SCOPE_GPIO_ONLY);
+    if (b_pin.panelPower != NOT_CONNECTED)
+    {
+        setPowerProfile(POWER_MODE_AUTO, POWER_SCOPE_GPIO_ONLY);
+    }
 
     // Turn SPI on, initialise GPIOs and set GPIO levels
     // Reset panel and get tables
@@ -532,6 +537,14 @@ void Screen_EPD_EXT3::begin()
 
     v_penSolid = false;
     u_invert = false;
+
+    //
+    // === Touch section
+    //
+
+    //
+    // === End of Touch section
+    //
 }
 
 STRING_TYPE Screen_EPD_EXT3::WhoAmI()
