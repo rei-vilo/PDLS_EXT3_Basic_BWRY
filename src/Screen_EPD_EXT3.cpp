@@ -65,6 +65,7 @@ void Screen_EPD_EXT3::COG_SmallQ_getDataOTP()
     // 1.6 Read OTP memory mapping data
     uint16_t _chipId;
     uint16_t _readBytes = 0;
+    // uint8_t ui8 = 0; // dummy
     u_flagOTP = false;
 
     // Size cSize cType Driver
