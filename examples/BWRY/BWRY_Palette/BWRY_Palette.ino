@@ -6,8 +6,8 @@
 /// @n Based on highView technology
 ///
 /// @author Rei Vilo
-/// @date 21 Mar 2024
-/// @version 801
+/// @date 21 Nov 2024
+/// @version 810
 ///
 /// @copyright (c) Rei Vilo, 2010-2024
 /// @copyright All rights reserved
@@ -39,8 +39,8 @@
 // Configuration
 #include "hV_Configuration.h"
 
-#if (SCREEN_EPD_EXT3_RELEASE < 801)
-#error Required SCREEN_EPD_EXT3_RELEASE 801
+#if (SCREEN_EPD_EXT3_RELEASE < 810)
+#error Required SCREEN_EPD_EXT3_RELEASE 810
 #endif // SCREEN_EPD_EXT3_RELEASE
 
 // Set parameters
