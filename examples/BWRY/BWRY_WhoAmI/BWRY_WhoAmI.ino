@@ -6,10 +6,10 @@
 /// @n Based on highView technology
 ///
 /// @author Rei Vilo
-/// @date 21 Nov 2024
-/// @version 810
+/// @date 21 Jan 2025
+/// @version 812
 ///
-/// @copyright (c) Rei Vilo, 2010-2024
+/// @copyright (c) Rei Vilo, 2010-2025
 /// @copyright All rights reserved
 /// @copyright For exclusive use with Pervasive Displays screens
 ///
@@ -39,8 +39,8 @@
 // Configuration
 #include "hV_Configuration.h"
 
-#if (SCREEN_EPD_EXT3_RELEASE < 810)
-#error Required SCREEN_EPD_EXT3_RELEASE 810
+#if (SCREEN_EPD_EXT3_RELEASE < 812)
+#error Required SCREEN_EPD_EXT3_RELEASE 812
 #endif // SCREEN_EPD_EXT3_RELEASE
 
 // Set parameters
